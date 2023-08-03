@@ -11,7 +11,9 @@ import android.view.WindowManager
 import androidx.activity.ComponentActivity
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.ViewCompositionStrategy
+import androidx.lifecycle.LifecycleService
 import androidx.lifecycle.setViewTreeLifecycleOwner
+import androidx.savedstate.SavedStateRegistryOwner
 import androidx.savedstate.setViewTreeSavedStateRegistryOwner
 import me.kartdroid.androidkitchen2.utils.logDebug
 
@@ -24,7 +26,7 @@ class FloatingWindow constructor(
     }
     private val root by lazy {
         ComposeView(context).apply {
-            setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnLifecycleDestroyed((context as ComponentActivity).lifecycle))
+            setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnLifecycleDestroyed((context as LifecycleService)))
             setContent {
                 ComposeContent(
                     onClose = {
@@ -52,7 +54,7 @@ class FloatingWindow constructor(
                     WindowManager.LayoutParams.MATCH_PARENT,
                     WindowManager.LayoutParams.WRAP_CONTENT,
                     WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY,
-                    WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
+                    WindowManager.LayoutParams.FLAG_BLUR_BEHIND,
                     PixelFormat.TRANSLUCENT
                 )
             } else {
@@ -72,8 +74,8 @@ class FloatingWindow constructor(
         params.y = 0
 
 
-        root.setViewTreeLifecycleOwner((context as ComponentActivity))
-        root.setViewTreeSavedStateRegistryOwner((context as ComponentActivity))
+        root.setViewTreeLifecycleOwner((context as LifecycleService))
+        root.setViewTreeSavedStateRegistryOwner((context as SavedStateRegistryOwner))
         root.setOnTouchListener(object : View.OnTouchListener {
             var initialX = 0
             var initialY = 0
