@@ -11,6 +11,7 @@ import android.view.WindowManager
 import androidx.activity.ComponentActivity
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.ViewCompositionStrategy
+import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LifecycleService
 import androidx.lifecycle.setViewTreeLifecycleOwner
 import androidx.savedstate.SavedStateRegistryOwner
@@ -26,7 +27,7 @@ class FloatingWindow constructor(
     }
     private val root by lazy {
         ComposeView(context).apply {
-            setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnLifecycleDestroyed((context as LifecycleService)))
+            setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnLifecycleDestroyed((context as LifecycleOwner)))
             setContent {
                 ComposeContent(
                     onClose = {

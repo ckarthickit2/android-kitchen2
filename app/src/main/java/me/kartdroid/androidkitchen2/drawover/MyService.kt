@@ -5,7 +5,6 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Intent
 import android.os.Build
-import android.os.IBinder
 import android.provider.Settings
 import androidx.core.app.NotificationCompat
 import androidx.lifecycle.LifecycleService
@@ -16,21 +15,28 @@ import androidx.savedstate.SavedStateRegistryOwner
 
 class MyService : LifecycleService(), SavedStateRegistryOwner {
 
+    private val savedStateRegistryController by lazy {  SavedStateRegistryController.create(this) }
+    override val savedStateRegistry: SavedStateRegistry by lazy {
+        savedStateRegistryController.savedStateRegistry
+    }
     private var floatingWindow: FloatingWindow? = null
-    override fun onBind(intent: Intent): IBinder {
-        super.onBind(intent)
-        TODO("Return the communication channel to the service.")
-    }
-
-    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        showFloatingWindow()
-        return super.onStartCommand(intent, flags, startId)
-    }
 
     override fun onCreate() {
+        savedStateRegistryController.performAttach()
+        savedStateRegistryController.performRestore(null)
+        // Restore the Saved State first so that it is available to
+        // OnContextAvailableListener instances
         super.onCreate()
         startForegroundService()
     }
+
+    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        super.onStartCommand(intent, flags, startId)
+        showFloatingWindow()
+        return START_NOT_STICKY
+    }
+
+
 
     private fun startForegroundService() {
         val notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
@@ -65,5 +71,4 @@ class MyService : LifecycleService(), SavedStateRegistryOwner {
         }
     }
 
-    override val savedStateRegistry: SavedStateRegistry = SavedStateRegistryController.create(this).savedStateRegistry
 }
