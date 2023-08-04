@@ -13,7 +13,7 @@ import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LifecycleService
-import androidx.lifecycle.setViewTreeLifecycleOwner
+import androidx.lifecycle.ViewTreeLifecycleOwner
 import androidx.savedstate.SavedStateRegistryOwner
 import androidx.savedstate.setViewTreeSavedStateRegistryOwner
 import me.kartdroid.androidkitchen2.utils.logDebug
@@ -75,7 +75,8 @@ class FloatingWindow constructor(
         params.y = 0
 
 
-        root.setViewTreeLifecycleOwner((context as LifecycleService))
+        ViewTreeLifecycleOwner.set(root, (context as LifecycleService))
+        //root.setViewTreeLifecycleOwner((context as LifecycleService))
         root.setViewTreeSavedStateRegistryOwner((context as SavedStateRegistryOwner))
         root.setOnTouchListener(object : View.OnTouchListener {
             var initialX = 0
