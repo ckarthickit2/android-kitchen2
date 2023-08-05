@@ -8,14 +8,18 @@ import android.os.Build
 import android.provider.Settings
 import androidx.core.app.NotificationCompat
 import androidx.lifecycle.LifecycleService
+import androidx.lifecycle.ViewModelStore
+import androidx.lifecycle.ViewModelStoreOwner
+import androidx.lifecycle.lifecycleScope
 import androidx.savedstate.SavedStateRegistry
 import androidx.savedstate.SavedStateRegistryController
 import androidx.savedstate.SavedStateRegistryOwner
 
 
-class MyService : LifecycleService(), SavedStateRegistryOwner {
+class MyService : LifecycleService(), SavedStateRegistryOwner, ViewModelStoreOwner {
 
     private val savedStateRegistryController by lazy {  SavedStateRegistryController.create(this) }
+    private val viewModelStoreInternal by lazy { ViewModelStore() }
     override val savedStateRegistry: SavedStateRegistry by lazy {
         savedStateRegistryController.savedStateRegistry
     }
@@ -66,9 +70,13 @@ class MyService : LifecycleService(), SavedStateRegistryOwner {
 
     private fun showFloatingWindow() {
         if (Settings.canDrawOverlays(applicationContext)){
-            floatingWindow = FloatingWindow(this)
+            floatingWindow = FloatingWindow(this, lifecycleScope)
             floatingWindow?.show()
         }
+    }
+
+    override fun getViewModelStore(): ViewModelStore {
+        return viewModelStoreInternal
     }
 
 }
