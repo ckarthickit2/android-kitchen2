@@ -10,13 +10,13 @@ import androidx.core.app.NotificationCompat
 import androidx.lifecycle.LifecycleService
 import androidx.lifecycle.ViewModelStore
 import androidx.lifecycle.ViewModelStoreOwner
-import androidx.lifecycle.lifecycleScope
 import androidx.savedstate.SavedStateRegistry
 import androidx.savedstate.SavedStateRegistryController
 import androidx.savedstate.SavedStateRegistryOwner
+import me.kartdroid.androidkitchen2.utils.viewModels
 
 
-class MyService : LifecycleService(), SavedStateRegistryOwner, ViewModelStoreOwner {
+class FloatingWindowService : LifecycleService(), SavedStateRegistryOwner, ViewModelStoreOwner {
 
     private val savedStateRegistryController by lazy {  SavedStateRegistryController.create(this) }
     private val viewModelStoreInternal by lazy { ViewModelStore() }
@@ -24,6 +24,9 @@ class MyService : LifecycleService(), SavedStateRegistryOwner, ViewModelStoreOwn
         savedStateRegistryController.savedStateRegistry
     }
     private var floatingWindow: FloatingWindow? = null
+    private val floatingWindowViewModel: FloatingWindowViewModel by viewModels {
+        FloatingWindowViewModel.Factory()
+    }
 
     override fun onCreate() {
         savedStateRegistryController.performAttach()
@@ -70,13 +73,18 @@ class MyService : LifecycleService(), SavedStateRegistryOwner, ViewModelStoreOwn
 
     private fun showFloatingWindow() {
         if (Settings.canDrawOverlays(applicationContext)){
-            floatingWindow = FloatingWindow(this, lifecycleScope)
+            floatingWindow = FloatingWindow(this, floatingWindowViewModel)
             floatingWindow?.show()
         }
     }
 
     override fun getViewModelStore(): ViewModelStore {
         return viewModelStoreInternal
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        viewModelStore.clear()
     }
 
 }
