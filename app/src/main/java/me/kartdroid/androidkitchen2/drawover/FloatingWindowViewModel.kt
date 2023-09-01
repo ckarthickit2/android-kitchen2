@@ -19,7 +19,7 @@ class FloatingWindowViewModel : ViewModel() {
 
     private val totalValue = 20f
     val progressCountdownState = MutableStateFlow(UIState(totalValue, totalValue))
-    var currentProgressJob: Job? = null
+    private var currentProgressJob: Job? = null
 
     class Factory : ViewModelProvider.Factory {
         @Suppress("UNCHECKED_CAST")

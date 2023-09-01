@@ -2,6 +2,7 @@ package me.kartdroid.androidkitchen2.drawover
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.Intent
 import android.graphics.PixelFormat
 import android.graphics.drawable.ColorDrawable
 import android.os.Build
@@ -20,15 +21,15 @@ import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.core.view.doOnAttach
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LifecycleService
-import androidx.lifecycle.ViewTreeLifecycleOwner
+import androidx.lifecycle.setViewTreeLifecycleOwner
 import androidx.savedstate.SavedStateRegistryOwner
 import androidx.savedstate.setViewTreeSavedStateRegistryOwner
 import kotlinx.coroutines.flow.distinctUntilChanged
 import me.kartdroid.androidkitchen2.utils.logDebug
 
 class FloatingWindow(
-    private val context: Context,
-    private val floatingWindowViewModel: FloatingWindowViewModel,
+        private val context: Context,
+        private val floatingWindowViewModel: FloatingWindowViewModel,
 ) {
 
     private val windowManager by lazy {
@@ -49,21 +50,21 @@ class FloatingWindow(
                 LaunchedEffect(key1 = Unit) {
                     logDebug("shouldClose = ${shouldClose.value}")
                     snapshotFlow { shouldClose.value }.distinctUntilChanged()
-                        .collect { shouldClose ->
-                            if (shouldClose) {
-                                hide()
+                            .collect { shouldClose ->
+                                if (shouldClose) {
+                                    hide()
+                                }
                             }
-                        }
                 }
                 ComposeContent(
-                    onClose = {
-                        hide()
-                    },
-                    current = progressState.value.current,
-                    total = progressState.value.total,
+                        onClose = {
+                            hide()
+                        },
+                        current = progressState.value.current,
+                        total = progressState.value.total,
                 )
             }
-            ViewTreeLifecycleOwner.set(this, (context as LifecycleService))
+            setViewTreeLifecycleOwner((context as LifecycleService))
             //root.setViewTreeLifecycleOwner((context as LifecycleService))
             setViewTreeSavedStateRegistryOwner((context as SavedStateRegistryOwner))
             //ViewTreeViewModelStoreOwner.set(this, (context as ViewModelStoreOwner))
@@ -76,6 +77,12 @@ class FloatingWindow(
     }
     private var isShowing = false
 
+
+    private fun startService() {
+        val service = Intent(context, FloatingWindowService::class.java)
+        context.startService(service)
+    }
+
     @MainThread
     fun show() {
         addRootView()
@@ -83,33 +90,34 @@ class FloatingWindow(
         floatingWindowViewModel.showTimer()
     }
 
-    private fun hide() {
+    @MainThread
+    fun hide() {
         removeRootView()
     }
 
     @SuppressLint("ClickableViewAccessibility")
     private fun addRootView() {
         val params: WindowManager.LayoutParams =
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                WindowManager.LayoutParams(
-                    WindowManager.LayoutParams.WRAP_CONTENT,
-                    WindowManager.LayoutParams.WRAP_CONTENT,
-                    WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY,
-                    WindowManager.LayoutParams.FLAG_BLUR_BEHIND,
-                    PixelFormat.TRANSLUCENT
-                )
-            } else {
-                WindowManager.LayoutParams(
-                    WindowManager.LayoutParams.WRAP_CONTENT,
-                    WindowManager.LayoutParams.WRAP_CONTENT,
-                    WindowManager.LayoutParams.TYPE_PHONE,
-                    WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
-                    PixelFormat.TRANSLUCENT
-                )
-            }
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    WindowManager.LayoutParams(
+                            WindowManager.LayoutParams.WRAP_CONTENT,
+                            WindowManager.LayoutParams.WRAP_CONTENT,
+                            WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY,
+                            WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
+                            PixelFormat.TRANSLUCENT
+                    )
+                } else {
+                    WindowManager.LayoutParams(
+                            WindowManager.LayoutParams.WRAP_CONTENT,
+                            WindowManager.LayoutParams.WRAP_CONTENT,
+                            WindowManager.LayoutParams.TYPE_PHONE,
+                            WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
+                            PixelFormat.TRANSLUCENT
+                    )
+                }
 
         params.gravity =
-            Gravity.TOP
+                Gravity.TOP
 
         params.x = 0
         params.y = 0

@@ -1,3 +1,17 @@
 <resources>
     <string name="app_name">AndroidKitchen2</string>
+    <string name="customer_added_x_tip">Customer added ₹%1$d TIP</string>
+    <string name="order_is_no_longer_available">Order is no longer available</string>
+    <string name="you_missed_the_order">You missed the order</string>
+    <string name="order_accepted_by_another_captain_message">Sorry, this order was accepted by another captain.</string>
+    <string name="pickup_text">Pickup</string>
+    <string name="drop">Drop</string>
+    <string name="rapido">Rapido</string>
+    <string name="accept_cta">Accept</string>
+    <string name="text_oa_extra">Extra</string>
+    <string name="online">Online</string>
+    <string name="text_bike">Bike</string>
+    <string name="text_auto">Auto</string>
+    <string name="auto">Auto</string>
+    <string name="local">Local</string>
 </resources>

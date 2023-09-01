@@ -1,8 +1,10 @@
 package me.kartdroid.androidkitchen2.drawover
 
+import android.content.Intent
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -31,8 +33,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import me.kartdroid.androidkitchen2.MainActivity
 import me.kartdroid.androidkitchen2.ui.theme.AndroidKitchen2Theme
 
 @Composable
@@ -47,8 +51,14 @@ fun ComposeContent(
                 .background(Color.Transparent)
                 .wrapContentWidth()
         ) {
+            val currentContext = LocalContext.current
             Column(
-                modifier = Modifier.padding(4.dp)
+                modifier = Modifier.padding(4.dp).clickable {
+                    onClose()
+                    currentContext.startActivity(Intent(currentContext, MainActivity::class.java).apply {
+                        addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                    })
+                },
             ) {
                 IconButton(
                     modifier = Modifier.align(Alignment.End),

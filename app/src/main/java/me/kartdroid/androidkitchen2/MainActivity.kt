@@ -18,6 +18,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import me.kartdroid.androidkitchen2.drawover.FloatingWindowService
+import me.kartdroid.androidkitchen2.orders.MMOOrderActivity
 import me.kartdroid.androidkitchen2.ui.theme.AndroidKitchen2Theme
 import me.kartdroid.androidkitchen2.utils.logDebug
 
@@ -52,12 +53,18 @@ class MainActivity : ComponentActivity() {
                         Button(
                             onClick = {
                                 if (canDrawOverOtherApps()) {
-                                    startService()
+                                    startServiceAndShowWindow()
                                     // FloatingWindow(this@MainActivity).show()
                                 }
                             }
                         ) {
                             Text("Display Over Other Apps - UI")
+                        }
+                        Button(onClick = { finishActivityAndStartFloatingWindow() }) {
+                            Text(text = "Finish Me & Start Service")
+                        }
+                        Button(onClick = { startOrderScreen() }) {
+                            Text(text = "Order Screen")
                         }
                     }
                 }
@@ -65,9 +72,23 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-    private fun startService() {
-        val service = Intent(this, FloatingWindowService::class.java)
+    private fun startServiceAndShowWindow() {
+        val service = Intent(this, FloatingWindowService::class.java).apply {
+            action = "SHOW_VIEW"
+        }
         startService(service)
+    }
+
+    private fun finishActivityAndStartFloatingWindow() {
+        finish()
+        val service = Intent(this, FloatingWindowService::class.java).apply {
+            action = "SHOW_VIEW"
+        }
+        startService(service)
+    }
+
+    private fun startOrderScreen() {
+        startActivity(Intent(this, MMOOrderActivity::class.java))
     }
 
     private fun canDrawOverOtherApps(): Boolean {

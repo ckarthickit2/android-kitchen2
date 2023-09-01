@@ -24,6 +24,7 @@ class FloatingWindowService : LifecycleService(), SavedStateRegistryOwner, ViewM
         savedStateRegistryController.savedStateRegistry
     }
     private var floatingWindow: FloatingWindow? = null
+
     private val floatingWindowViewModel: FloatingWindowViewModel by viewModels {
         FloatingWindowViewModel.Factory()
     }
@@ -39,7 +40,11 @@ class FloatingWindowService : LifecycleService(), SavedStateRegistryOwner, ViewM
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         super.onStartCommand(intent, flags, startId)
-        showFloatingWindow()
+        if(intent?.action == "SHOW_VIEW") {
+            showFloatingWindow()
+        }else if(intent?.action == "HIDE_VIEW") {
+            floatingWindow?.hide()
+        }
         return START_NOT_STICKY
     }
 
@@ -78,13 +83,12 @@ class FloatingWindowService : LifecycleService(), SavedStateRegistryOwner, ViewM
         }
     }
 
-    override fun getViewModelStore(): ViewModelStore {
-        return viewModelStoreInternal
-    }
-
     override fun onDestroy() {
         super.onDestroy()
         viewModelStore.clear()
     }
+
+    override val viewModelStore: ViewModelStore
+        get() = viewModelStoreInternal
 
 }
