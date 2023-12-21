@@ -79,4 +79,4 @@ object RapidoTheme {
         get() = LocalKitchenColors.current
 }
 
-val LocalKitchenColors = staticCompositionLocalOf { KitchenDefaultOrderColors }
+val LocalKitchenColors = staticCompositionLocalOf { KitchenDefaultOrderColorsLight }

@@ -36,6 +36,14 @@
             android:name=".orders.MMOOrderActivity"
             android:exported="false"
             android:theme="@style/Theme.AndroidKitchen2" />
+        <activity
+            android:name=".html.HtmlActivity"
+            android:exported="false"
+            android:theme="@style/Theme.AndroidKitchen2" />
+
+        <activity
+            android:name=".dragablecompose.DragableComposeActivity"
+            android:theme="@style/Theme.AndroidKitchen2" />
     </application>
 
 </manifest>

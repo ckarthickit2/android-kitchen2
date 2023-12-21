@@ -5,6 +5,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
@@ -25,7 +26,8 @@ import me.kartdroid.androidkitchen2.R
 import me.kartdroid.androidkitchen2.presentation.UIImageResource
 import me.kartdroid.androidkitchen2.presentation.UiText
 import me.kartdroid.androidkitchen2.ui.theme.AndroidKitchen2Theme
-import me.kartdroid.androidkitchen2.ui.theme.KitchenDefaultOrderColors
+import me.kartdroid.androidkitchen2.ui.theme.KitchenDefaultOrderColorsDark
+import me.kartdroid.androidkitchen2.ui.theme.KitchenDefaultOrderColorsLight
 import me.kartdroid.androidkitchen2.ui.theme.LocalKitchenColors
 import me.kartdroid.androidkitchen2.ui.theme.RdsColors
 import me.kartdroid.androidkitchen2.utils.logDebug
@@ -39,6 +41,7 @@ class MMOOrderActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         logDebug("Main ::onCreate")
+        //AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
         setContent {
             Content()
         }
@@ -72,7 +75,11 @@ class MMOOrderActivity : ComponentActivity() {
                             }
             ) {
                 CompositionLocalProvider(
-                        LocalKitchenColors provides KitchenDefaultOrderColors
+                        LocalKitchenColors provides if (isSystemInDarkTheme()) {
+                            KitchenDefaultOrderColorsLight
+                        } else {
+                            KitchenDefaultOrderColorsDark
+                        }
                 ) {
                     var modifier = Modifier
                             .clip(RoundedCornerShape(16.dp))

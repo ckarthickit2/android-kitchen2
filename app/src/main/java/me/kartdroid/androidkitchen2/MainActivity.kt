@@ -17,7 +17,9 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import me.kartdroid.androidkitchen2.dragablecompose.DragableComposeActivity
 import me.kartdroid.androidkitchen2.drawover.FloatingWindowService
+import me.kartdroid.androidkitchen2.html.HtmlActivity
 import me.kartdroid.androidkitchen2.orders.MMOOrderActivity
 import me.kartdroid.androidkitchen2.ui.theme.AndroidKitchen2Theme
 import me.kartdroid.androidkitchen2.utils.logDebug
@@ -66,6 +68,12 @@ class MainActivity : ComponentActivity() {
                         Button(onClick = { startOrderScreen() }) {
                             Text(text = "Order Screen")
                         }
+                        Button(onClick = { startHtmlScreen() }) {
+                            Text(text = "Html Text")
+                        }
+                        Button(onClick = { startDraggableComposeActivity() }) {
+                            Text(text = "Draggable Compose")
+                        }
                     }
                 }
             }
@@ -89,6 +97,14 @@ class MainActivity : ComponentActivity() {
 
     private fun startOrderScreen() {
         startActivity(Intent(this, MMOOrderActivity::class.java))
+    }
+
+    private fun startHtmlScreen() {
+        startActivity(Intent(this, HtmlActivity::class.java))
+    }
+
+    private fun startDraggableComposeActivity() {
+        startActivity(Intent(this, DragableComposeActivity::class.java))
     }
 
     private fun canDrawOverOtherApps(): Boolean {

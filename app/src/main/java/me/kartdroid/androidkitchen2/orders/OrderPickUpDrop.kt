@@ -1,7 +1,9 @@
 package me.kartdroid.androidkitchen2.orders
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -71,6 +73,7 @@ fun OrderPickUpDrop(
             contentDescription = null
         )
 
+        Log.d("KC_DEBUG", "onSurfaceColor = ${RapidoTheme.colors.onSurface}, darkTheme?: ${isSystemInDarkTheme()}")
         // Pickup Title
         Text(
             modifier = Modifier

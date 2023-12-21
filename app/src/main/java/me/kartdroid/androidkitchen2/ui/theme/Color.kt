@@ -46,12 +46,28 @@ object RdsColors {
     val pickupDropConnectorColor = Color(0xFFD9D9D9)
 }
 
-val KitchenDefaultOrderColors = KitchenThemeColors(
+val KitchenDefaultOrderColorsLight = KitchenThemeColors(
         primary = yellow400,
         primaryContainer = arrayListOf(Color.White, Color.White),
         onPrimaryContainer = dark1,
         onPrimaryContainerVariant = greenBase,
         secondaryContainer = contentPrimary,
+        secondaryContainerOutline = gray_400,
+        onSecondaryContainer = transparent,
+        surface = white,
+        secondarySurface = white,
+        onSurface = dark1,
+        onSurfaceVariant = dark3,
+        onSurfaceDimVariant = dark2,
+        primaryDividerStyle = DividerStyle.SOLID
+)
+
+val KitchenDefaultOrderColorsDark = KitchenThemeColors(
+        primary = yellow400,
+        primaryContainer = arrayListOf(Color.White, Color.White),
+        onPrimaryContainer = dark1,
+        onPrimaryContainerVariant = greenBase,
+        secondaryContainer = white,
         secondaryContainerOutline = gray_400,
         onSecondaryContainer = transparent,
         surface = white,

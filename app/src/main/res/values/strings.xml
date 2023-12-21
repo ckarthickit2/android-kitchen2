@@ -14,4 +14,8 @@
     <string name="text_auto">Auto</string>
     <string name="auto">Auto</string>
     <string name="local">Local</string>
+    <string name="add_draggable">Add Draggable</string>
+    <string name="remove_draggable">Remove Draggable</string>
+    <string name="orderid_dummy">OrderID: 12a4b16fe</string>
+    <string name="delivery">Delivery</string>
 </resources>

@@ -2,6 +2,7 @@
 plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.kotlinAndroid)
+    kotlin("plugin.serialization")
 }
 
 android {
@@ -59,10 +60,17 @@ dependencies {
 
     implementation(libs.contraint.compose)
 
+    implementation(libs.androidx.drawer.layout)
+    implementation(libs.androidx.coordinator.layout)
+    implementation(libs.material.native)
+
     implementation(libs.material3)
     implementation(libs.androidx.lifecycle.service)
 
     implementation(libs.kotlinx.collections.immutable)
+
+    //serialization
+    implementation(libs.kotlinx.serialization.json)
 
     implementation(libs.coil.compose)
     implementation(libs.coil.svg)
