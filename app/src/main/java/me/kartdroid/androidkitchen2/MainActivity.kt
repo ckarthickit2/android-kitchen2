@@ -22,6 +22,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import me.kartdroid.androidkitchen2.drawover.FloatingWindow
+import me.kartdroid.androidkitchen2.drawover.MyService
 import me.kartdroid.androidkitchen2.ui.theme.AndroidKitchen2Theme
 import me.kartdroid.androidkitchen2.utils.logDebug
 
@@ -56,7 +57,8 @@ class MainActivity : ComponentActivity() {
                         Button(
                             onClick = {
                                 if (canDrawOverOtherApps()) {
-                                    FloatingWindow(this@MainActivity).show()
+                                    startService()
+                                    // FloatingWindow(this@MainActivity).show()
                                 }
                             }
                         ) {
@@ -66,6 +68,11 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
+    }
+
+    private fun startService() {
+        val service = Intent(this, MyService::class.java)
+        startService(service)
     }
 
     private fun canDrawOverOtherApps(): Boolean {
