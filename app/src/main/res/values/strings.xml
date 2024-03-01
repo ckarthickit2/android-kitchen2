@@ -13,6 +13,7 @@
     <string name="text_bike">Bike</string>
     <string name="text_auto">Auto</string>
     <string name="auto">Auto</string>
+    <string name="auto_share">Auto Share</string>
     <string name="local">Local</string>
     <string name="add_draggable">Add Draggable</string>
     <string name="remove_draggable">Remove Draggable</string>

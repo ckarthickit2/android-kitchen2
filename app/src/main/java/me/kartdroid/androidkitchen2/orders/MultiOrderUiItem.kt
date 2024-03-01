@@ -1,12 +1,15 @@
 package me.kartdroid.androidkitchen2.orders
 
+import me.kartdroid.androidkitchen2.presentation.UIImageResource
 import java.util.concurrent.TimeUnit
 
 /**
  * @author [Karthick Chinnathambi]()
  * @since 01/09/23
  */
+
 data class MultiOrderUiItem(
+        val version: String = "",
         val id: String,
         val orderType: String,
         val serviceInfo: ServiceInfo,
@@ -42,7 +45,10 @@ data class MultiOrderUiItem(
         val templateName: String = "default",
         val headerRightIconUrl: String = "",
         val navItemIconUrl: String = "",
-        val extraAmountDisplayProps: ExtraAmountDisplayProps
+        val extraAmountDisplayProps: ExtraAmountDisplayProps,
+        val header: Header = Header(),
+        val pool: Pool = Pool(),
+        val callOutBanner: CallOutBanner = CallOutBanner()
 ) {
 
     private val remainingTime: Long get() = this.captainAcceptTimer - ((Utilities.getTrueTime() - this.orderCreatedTime) / 1000)
@@ -87,4 +93,36 @@ data class MultiOrderUiItem(
                 0
             }
         }
+
+    data class Header(
+            val title: String = "",
+            val subTitle: String = ""
+    )
+
+    data class Pool(
+            val poolId: String = "",
+            val poolOrders: List<PoolOrder> = emptyList()
+    ) {
+        data class PoolOrder(
+                val orderId: String = "",
+                val uniCastServiceIcon: UIImageResource = UIImageResource.RemoteResource(""),
+                val earnings: Earnings = Earnings()
+        ) {
+            data class Earnings(
+                    val amount: Double = 0.0,
+                    val amountWithoutExtra: Double = 0.0,
+                    val extra: Double = 0.0
+            )
+        }
+    }
+
+    data class CallOutBanner(
+            val message: String = "",
+            val iconUrl: String = "",
+            val floaterMessage: String = ""
+    ) {
+        companion object {
+            val EMPTY = CallOutBanner("", "", "")
+        }
+    }
 }

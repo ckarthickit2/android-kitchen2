@@ -3,33 +3,13 @@ package me.kartdroid.androidkitchen2.orders
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import me.kartdroid.androidkitchen2.R
+import me.kartdroid.androidkitchen2.orders.preview.MultiOrderPreviewProvider
 import me.kartdroid.androidkitchen2.presentation.UIImageResource
 import me.kartdroid.androidkitchen2.presentation.UiText
-import me.kartdroid.androidkitchen2.ui.theme.AndroidKitchen2Theme
-import me.kartdroid.androidkitchen2.ui.theme.KitchenDefaultOrderColorsDark
-import me.kartdroid.androidkitchen2.ui.theme.KitchenDefaultOrderColorsLight
-import me.kartdroid.androidkitchen2.ui.theme.LocalKitchenColors
-import me.kartdroid.androidkitchen2.ui.theme.RdsColors
 import me.kartdroid.androidkitchen2.utils.logDebug
 
 /**
@@ -49,64 +29,23 @@ class MMOOrderActivity : ComponentActivity() {
 
     @Composable
     fun Content() {
-        Order(
-                order = MOCK_ITEM,
-                onOrderClicked = {},
-                onAcceptOrder = {},
-                onRejectOrder = { finish() })
+        val mutilOrderList = MultiOrderPreviewProvider().values.first()
+        OrderList(
+                orderList = mutilOrderList.orderList,
+                orderThemeColorsMap = mutilOrderList.orderThemeColorsMap,
+                lazyListState = rememberLazyListState(),
+                updateSelectedOrder = { _, _ -> },
+                onAcceptOrder = { _, _ -> },
+                onRejectOrder = { },
+                logOrdersScroll = { },
+                // uiVersion = UiVersion.UI_VERSION_1_0,
+                logOnCustomerTipFTuxViewed = { },
+                logCustomerTipFTuxClicked = { }
+        )
     }
 
 
-    @Composable
-    private fun Order(
-            order: MultiOrderUiItem,
-            onOrderClicked: (orderId: MultiOrderUiItem) -> Unit,
-            onAcceptOrder: (orderId: MultiOrderUiItem) -> Unit,
-            onRejectOrder: (orderId: String) -> Unit,
-    ) {
-        AndroidKitchen2Theme {
-            var columnHeight by remember { mutableStateOf(0) }
-            Box(
-                    modifier = Modifier
-                            .padding(8.dp)
-                            .background(color = RdsColors.transparent)
-                            .onSizeChanged {
-                                columnHeight = it.height
-                            }
-            ) {
-                CompositionLocalProvider(
-                        LocalKitchenColors provides if (isSystemInDarkTheme()) {
-                            KitchenDefaultOrderColorsLight
-                        } else {
-                            KitchenDefaultOrderColorsDark
-                        }
-                ) {
-                    var modifier = Modifier
-                            .clip(RoundedCornerShape(16.dp))
-                            .shadow(elevation = 6.dp)
-                    if (order.isOnRideBooking.not()) {
-                        modifier = modifier.clickable {
-                            onOrderClicked(order)
-                        }
-                    }
-                    Column {
-                        OrderItem(
-                                modifier = modifier,
-                                order = order,
-                                index = 0,
-                                orderListSize = 1,
-                                isShowCardPadding = false,
-                                isShowDistanceVertical = false,
-                                onAcceptOrder = {
-                                    onAcceptOrder(order)
-                                },
-                                onRejectOrder = onRejectOrder
-                        ) { columnHeight }
-                    }
-                }
-            }
-        }
-    }
+//
 
     @Preview(showBackground = true)
     @Composable
@@ -117,7 +56,8 @@ class MMOOrderActivity : ComponentActivity() {
 
 
 private val MOCK_ITEM = MultiOrderUiItem(
-        "2",
+        id = "2",
+        version = "1.0",
         orderType = "app",
         serviceInfo = ServiceInfo(
                 serviceName = UiText.StringResource(R.string.rapido),

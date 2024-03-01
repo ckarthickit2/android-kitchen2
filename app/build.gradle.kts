@@ -7,7 +7,7 @@ plugins {
 
 android {
     namespace = "me.kartdroid.androidkitchen2"
-    compileSdk = 33
+    compileSdk = 34
 
     defaultConfig {
         applicationId = "me.kartdroid.androidkitchen2"
@@ -39,7 +39,7 @@ android {
         compose = true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.4.4"
+        kotlinCompilerExtensionVersion = "1.5.3"
     }
     packagingOptions {
         resources {

@@ -42,8 +42,10 @@ object RdsColors {
     val redBase = Color(0xffD63643)
     val green6 = Color(0xff24A665)
     val blueDark3 = Color(0xff193b99)
-
+    val scrollbarThumbColor = Color(0xFFBCBCC0)
     val pickupDropConnectorColor = Color(0xFFD9D9D9)
+    val blue100 = Color(0xffd4e6fc)
+    val blue500 = Color(0xff1559ac)
 }
 
 val KitchenDefaultOrderColorsLight = KitchenThemeColors(
@@ -67,13 +69,13 @@ val KitchenDefaultOrderColorsDark = KitchenThemeColors(
         primaryContainer = arrayListOf(Color.White, Color.White),
         onPrimaryContainer = dark1,
         onPrimaryContainerVariant = greenBase,
-        secondaryContainer = white,
-        secondaryContainerOutline = gray_400,
-        onSecondaryContainer = transparent,
-        surface = white,
-        secondarySurface = white,
-        onSurface = dark1,
-        onSurfaceVariant = dark3,
-        onSurfaceDimVariant = dark2,
+        secondaryContainer = RdsColors.contentPrimary,
+        secondaryContainerOutline = RdsColors.gray_400,
+        onSecondaryContainer = RdsColors.transparent,
+        surface = RdsColors.white,
+        secondarySurface = RdsColors.white,
+        onSurface = RdsColors.dark1,
+        onSurfaceVariant = RdsColors.dark3,
+        onSurfaceDimVariant = RdsColors.dark2,
         primaryDividerStyle = DividerStyle.SOLID
 )
