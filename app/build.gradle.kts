@@ -2,11 +2,12 @@
 plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.kotlinAndroid)
+    kotlin("plugin.serialization")
 }
 
 android {
     namespace = "me.kartdroid.androidkitchen2"
-    compileSdk = 33
+    compileSdk = 34
 
     defaultConfig {
         applicationId = "me.kartdroid.androidkitchen2"
@@ -38,9 +39,9 @@ android {
         compose = true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.4.3"
+        kotlinCompilerExtensionVersion = "1.5.3"
     }
-    packaging {
+    packagingOptions {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
@@ -56,7 +57,24 @@ dependencies {
     implementation(libs.ui)
     implementation(libs.ui.graphics)
     implementation(libs.ui.tooling.preview)
+
+    implementation(libs.contraint.compose)
+
+    implementation(libs.androidx.drawer.layout)
+    implementation(libs.androidx.coordinator.layout)
+    implementation(libs.material.native)
+
     implementation(libs.material3)
+    implementation(libs.androidx.lifecycle.service)
+
+    implementation(libs.kotlinx.collections.immutable)
+
+    //serialization
+    implementation(libs.kotlinx.serialization.json)
+
+    implementation(libs.coil.compose)
+    implementation(libs.coil.svg)
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.test.ext.junit)
     androidTestImplementation(libs.espresso.core)

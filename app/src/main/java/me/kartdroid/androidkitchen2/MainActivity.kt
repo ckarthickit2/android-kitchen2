@@ -1,6 +1,5 @@
 package me.kartdroid.androidkitchen2
 
-import android.content.ContentProvider
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -8,20 +7,20 @@ import android.provider.Settings
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
-import me.kartdroid.androidkitchen2.drawover.FloatingWindow
+import me.kartdroid.androidkitchen2.dragablecompose.DragableComposeActivity
+import me.kartdroid.androidkitchen2.drawover.FloatingWindowService
+import me.kartdroid.androidkitchen2.html.HtmlActivity
+import me.kartdroid.androidkitchen2.orders.MMOOrderActivity
 import me.kartdroid.androidkitchen2.ui.theme.AndroidKitchen2Theme
 import me.kartdroid.androidkitchen2.utils.logDebug
 
@@ -56,16 +55,56 @@ class MainActivity : ComponentActivity() {
                         Button(
                             onClick = {
                                 if (canDrawOverOtherApps()) {
-                                    FloatingWindow(this@MainActivity).show()
+                                    startServiceAndShowWindow()
+                                    // FloatingWindow(this@MainActivity).show()
                                 }
                             }
                         ) {
                             Text("Display Over Other Apps - UI")
                         }
+                        Button(onClick = { finishActivityAndStartFloatingWindow() }) {
+                            Text(text = "Finish Me & Start Service")
+                        }
+                        Button(onClick = { startOrderScreen() }) {
+                            Text(text = "Order Screen")
+                        }
+                        Button(onClick = { startHtmlScreen() }) {
+                            Text(text = "Html Text")
+                        }
+                        Button(onClick = { startDraggableComposeActivity() }) {
+                            Text(text = "Draggable Compose")
+                        }
                     }
                 }
             }
         }
+    }
+
+    private fun startServiceAndShowWindow() {
+        val service = Intent(this, FloatingWindowService::class.java).apply {
+            action = "SHOW_VIEW"
+        }
+        startService(service)
+    }
+
+    private fun finishActivityAndStartFloatingWindow() {
+        finish()
+        val service = Intent(this, FloatingWindowService::class.java).apply {
+            action = "SHOW_VIEW"
+        }
+        startService(service)
+    }
+
+    private fun startOrderScreen() {
+        startActivity(Intent(this, MMOOrderActivity::class.java))
+    }
+
+    private fun startHtmlScreen() {
+        startActivity(Intent(this, HtmlActivity::class.java))
+    }
+
+    private fun startDraggableComposeActivity() {
+        startActivity(Intent(this, DragableComposeActivity::class.java))
     }
 
     private fun canDrawOverOtherApps(): Boolean {
