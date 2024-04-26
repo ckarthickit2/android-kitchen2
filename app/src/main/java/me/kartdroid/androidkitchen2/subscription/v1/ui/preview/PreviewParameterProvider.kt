@@ -88,7 +88,7 @@ class SubsScreenPreviewParameterProvider : PreviewParameterProvider<Subscription
                                     "Buy a Plan to continue after your 5 DAY free trial",
                                     listOf(
                                             SubscriptionInfo.Subscription(
-                                                    subscriptionId = "",
+                                                    subscriptionId = "a",
                                                     title = "₹1000 Earnings left",
                                                     description = "₹0 Commission",
                                                     validityInfoDescription = "Valid till 12th June",
@@ -103,7 +103,7 @@ class SubsScreenPreviewParameterProvider : PreviewParameterProvider<Subscription
                                                     passPurchaseDescription = "Incentives may not be applicable"
                                             ),
                                             SubscriptionInfo.Subscription(
-                                                    subscriptionId = "",
+                                                    subscriptionId = "b",
                                                     title = "₹1000 Earnings left",
                                                     description = "₹0 Commission",
                                                     validityInfoDescription = "Valid till 12th June",
@@ -118,7 +118,7 @@ class SubsScreenPreviewParameterProvider : PreviewParameterProvider<Subscription
                                                     passPurchaseDescription = "Incentives may not be applicable"
                                             ),
                                             SubscriptionInfo.Subscription(
-                                                    subscriptionId = "",
+                                                    subscriptionId = "c",
                                                     title = "₹500 Earnings left",
                                                     description = "₹0 Commission",
                                                     validityInfoDescription = "Valid till 12th June",
@@ -133,7 +133,7 @@ class SubsScreenPreviewParameterProvider : PreviewParameterProvider<Subscription
                                                     passPurchaseDescription = "Incentives may not be applicable"
                                             ),
                                             SubscriptionInfo.Subscription(
-                                                    subscriptionId = "",
+                                                    subscriptionId = "d",
                                                     title = "₹800 Earnings left",
                                                     description = "₹0 Commission",
                                                     validityInfoDescription = "Valid till 12th June",
@@ -148,7 +148,7 @@ class SubsScreenPreviewParameterProvider : PreviewParameterProvider<Subscription
                                                     passPurchaseDescription = "Incentives may not be applicable"
                                             ),
                                             SubscriptionInfo.Subscription(
-                                                    subscriptionId = "",
+                                                    subscriptionId = "e",
                                                     title = "₹1000 Earnings left",
                                                     description = "₹0 Commission",
                                                     validityInfoDescription = "Valid till 12th June",
@@ -163,7 +163,7 @@ class SubsScreenPreviewParameterProvider : PreviewParameterProvider<Subscription
                                                     passPurchaseDescription = "Incentives may not be applicable"
                                             ),
                                             SubscriptionInfo.Subscription(
-                                                    subscriptionId = "",
+                                                    subscriptionId = "f",
                                                     title = "₹600 Earnings left",
                                                     description = "₹0 Commission",
                                                     validityInfoDescription = "Valid till 12th June",
@@ -197,7 +197,7 @@ class SubsScreenPreviewParameterProvider : PreviewParameterProvider<Subscription
                             bottomSheetTitle = ""
                     ),
                     selectedSubscription = SubscriptionInfo.Subscription(
-                            subscriptionId = "",
+                            subscriptionId = "b",
                             title = "₹1000 Earnings left",
                             description = "₹0 Commission",
                             validityInfoDescription = "Valid till 12th June",

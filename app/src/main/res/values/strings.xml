@@ -45,6 +45,7 @@
     <string name="active_status">Active</string>
     <string name="expiring_soon_status">Expiring Soon</string>
     <string name="expired_status">Expired</string>
+    <string name="recommended">Recommended</string>
 
     <!-- Error Screen -->
     <string name="check_your_connection">Check your mobile network \n Or move to a stronger network zone and try again!</string>

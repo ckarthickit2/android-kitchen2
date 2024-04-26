@@ -145,7 +145,7 @@ fun SubscriptionContents(
 private fun getSubscriptionCardSelectIcon(subscription: SubscriptionInfo.Subscription, modifier: Modifier, selectedSubscription: SubscriptionInfo.Subscription) =
     if (subscription.subscriptionId == selectedSubscription.subscriptionId) RdsIconDrawableConfig(drawable = R.drawable.ic_selected_plan, modifier = modifier.padding(start = 16.dp, top = 16.dp)) else RdsIconDrawableConfig(drawable = R.drawable.ic_unselected_plan, modifier = modifier.padding(start = 16.dp, top = 16.dp))
 
-@Preview
+@Preview(showSystemUi = true)
 @Composable
 fun PreviewSubscriptionContents() {
     SubscriptionContents(
