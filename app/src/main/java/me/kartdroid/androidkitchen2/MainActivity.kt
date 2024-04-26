@@ -20,6 +20,7 @@ import me.kartdroid.androidkitchen2.dragablecompose.DragableComposeActivity
 import me.kartdroid.androidkitchen2.drawover.FloatingWindowService
 import me.kartdroid.androidkitchen2.html.HtmlActivity
 import me.kartdroid.androidkitchen2.orders.MMOOrderActivity
+import me.kartdroid.androidkitchen2.subscription.activity.SubscriptionActivity
 import me.kartdroid.androidkitchen2.ui.theme.AndroidKitchen2Theme
 import me.kartdroid.androidkitchen2.utils.logDebug
 
@@ -72,6 +73,10 @@ class MainActivity : ComponentActivity() {
                         Button(onClick = { startDraggableComposeActivity() }) {
                             Text(text = "Draggable Compose")
                         }
+
+                        Button(onClick = { startSubscriptionActivity() }) {
+                            Text(text = "Subscription Screen")
+                        }
                     }
                 }
             }
@@ -103,6 +108,10 @@ class MainActivity : ComponentActivity() {
 
     private fun startDraggableComposeActivity() {
         startActivity(Intent(this, DragableComposeActivity::class.java))
+    }
+
+    private fun startSubscriptionActivity() {
+        startActivity(Intent(this, SubscriptionActivity::class.java))
     }
 
     private fun canDrawOverOtherApps(): Boolean {
