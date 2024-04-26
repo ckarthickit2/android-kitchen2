@@ -13,10 +13,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material3.Divider
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
+import androidx.compose.material.Divider
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Surface
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -85,7 +85,7 @@ fun OrderPickUpDrop(
                         width = Dimension.fillToConstraints
                     }
                     .padding(start = 14.dp),
-            style = MaterialTheme.typography.bodyLarge.copy(
+            style = MaterialTheme.typography.body2.copy(
                 lineHeight = 20.sp,
                 fontWeight = FontWeight.Bold,
                 color = RapidoTheme.colors.onSurface
@@ -106,7 +106,7 @@ fun OrderPickUpDrop(
                                 if (pickUpAddress.isNullOrBlank()) Visibility.Gone else Visibility.Visible
                     }
                     .fillMaxWidth(),
-            style = MaterialTheme.typography.labelSmall.copy(
+            style = MaterialTheme.typography.caption.copy(
                 fontWeight = FontWeight.Normal,
                 color = RapidoTheme.colors.onSurfaceVariant
             ),
@@ -152,7 +152,7 @@ fun OrderPickUpDrop(
                                 if (isBatchOrder && batchOrderSize > 1) Visibility.Visible else Visibility.Gone
                     }
                     .fillMaxWidth(),
-            style = MaterialTheme.typography.bodyMedium.copy(
+            style = MaterialTheme.typography.body2.copy(
                 lineHeight = 20.sp,
                 fontWeight = FontWeight.Bold,
                 color = RapidoTheme.colors.onSurface
@@ -184,7 +184,7 @@ fun OrderPickUpDrop(
                             width = Dimension.fillToConstraints
                         }
                         .padding(start = 14.dp),
-                style = MaterialTheme.typography.bodyLarge.copy(
+                style = MaterialTheme.typography.body1.copy(
                     lineHeight = 20.sp,
                     fontWeight = FontWeight.Bold,
                     color = RapidoTheme.colors.onSurface
@@ -205,7 +205,7 @@ fun OrderPickUpDrop(
                                     if (!dropAddress.isNullOrBlank()) Visibility.Visible else Visibility.Gone
                         }
                         .fillMaxWidth(),
-                style = MaterialTheme.typography.labelSmall.copy(
+                style = MaterialTheme.typography.caption.copy(
                     fontWeight = FontWeight.Normal,
                     color = RapidoTheme.colors.onSurfaceVariant
                 ),
@@ -272,7 +272,7 @@ private fun BatchAddressIndicator(modifier: Modifier = Modifier, count: Int) {
 fun OrderPickUpDropPreview(@PreviewParameter(PreviewPickupDropProvider::class) pickupDrop: PreviewPickupDropProvider.PreviewPickupDrop) {
     AndroidKitchen2Theme {
         Surface(
-            color = MaterialTheme.colorScheme.background
+            color = MaterialTheme.colors.background
         ) {
             OrderPickUpDrop(
                 modifier = Modifier

@@ -15,18 +15,15 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.Button
+import androidx.compose.material.CircularProgressIndicator
+import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Close
-import androidx.compose.material3.Button
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -61,22 +58,22 @@ fun ComposeContent(
                 },
             ) {
                 IconButton(
-                    modifier = Modifier.align(Alignment.End),
-                    onClick = onClose
+                        modifier = Modifier.align(Alignment.End),
+                        onClick = onClose
                 ) {
                     Icon(imageVector = Icons.Filled.Close, tint = Color.Black, contentDescription = "Close")
                 }
                 Box(
                     modifier = Modifier
-                        .background(MaterialTheme.colorScheme.surface, CardDefaults.shape)
+                        .background(MaterialTheme.colors.surface)
                         .border(BorderStroke(1.dp, Color.Black)),
                 ) {
                     Column(
                         modifier = Modifier
                             .padding(10.dp)
                     ) {
-                        Text(text = "Floating Window", style = MaterialTheme.typography.displaySmall)
-                        Text(text = "This is a sample description", style = MaterialTheme.typography.bodyMedium)
+                        Text(text = "Floating Window", style = MaterialTheme.typography.body2)
+                        Text(text = "This is a sample description", style = MaterialTheme.typography.body1)
                         Row(
                             horizontalArrangement = Arrangement.SpaceBetween,
                             verticalAlignment = Alignment.CenterVertically
@@ -93,7 +90,7 @@ fun ComposeContent(
                             }
                            Row(
                                modifier = Modifier
-                                   .background(MaterialTheme.colorScheme.primary, shape = RoundedCornerShape(8.dp))
+                                   .background(MaterialTheme.colors.primary, shape = RoundedCornerShape(8.dp))
                                ,
                                horizontalArrangement = Arrangement.SpaceBetween,
                                verticalAlignment = Alignment.CenterVertically

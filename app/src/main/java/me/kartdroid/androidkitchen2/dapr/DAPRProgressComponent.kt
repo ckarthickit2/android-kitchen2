@@ -8,8 +8,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.LinearProgressIndicator
-import androidx.compose.material3.Text
+import androidx.compose.material.LinearProgressIndicator
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -69,11 +69,11 @@ fun DaprCategoryBarComponent(
             Column(modifier = Modifier.weight(1f)) {
                 LinearProgressIndicator(
                         color = color,
-                        trackColor = backgroundColor,
+                        backgroundColor = backgroundColor,
                         progress = progress,
                         modifier = Modifier
                                 .clip(segmentShape)
-                                .height(barHeight)
+                                .height(barHeight),
                 )
 
                 Text(

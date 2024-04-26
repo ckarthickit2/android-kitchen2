@@ -39,7 +39,7 @@ android {
         compose = true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.3"
+        kotlinCompilerExtensionVersion = "1.5.10"
     }
     packagingOptions {
         resources {
@@ -54,6 +54,7 @@ dependencies {
     implementation(libs.lifecycle.runtime.ktx)
     implementation(libs.activity.compose)
     implementation(platform(libs.compose.bom))
+    implementation(libs.accompanist.placeholder)
     implementation(libs.ui)
     implementation(libs.ui.graphics)
     implementation(libs.ui.tooling.preview)
@@ -64,7 +65,8 @@ dependencies {
     implementation(libs.androidx.coordinator.layout)
     implementation(libs.material.native)
 
-    implementation(libs.material3)
+    implementation(libs.material)
+    //implementation(libs.material3)
     implementation(libs.androidx.lifecycle.service)
 
     implementation(libs.kotlinx.collections.immutable)

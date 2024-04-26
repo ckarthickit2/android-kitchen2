@@ -1,5 +1,7 @@
 package com.rapido.rider.preorder.multi.presentation.ui.composables
 
+//import androidx.compose.runtime.mutableIntStateOf
+//import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -21,14 +23,14 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Divider
-import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
+import androidx.compose.material.Divider
+import androidx.compose.material.Icon
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Surface
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -76,7 +78,7 @@ fun OrderItem(
         onRejectOrder: (orderId: String) -> Unit,
         parentHeightProvider: () -> Int = { 0 },
 ) {
-    var cardHeight by remember { mutableIntStateOf(0) }
+    var cardHeight by remember { mutableStateOf(0) }
     val isShowOverlay = (order.unavailableReason==PreOrderUnavailableReason.ACCEPTED_BY_OTHER_CAPTAIN || order.unavailableReason==PreOrderUnavailableReason.ORDER_CANCELLED_BY_CUSTOMER)
     val isDistanceOrEtaAvailable = (order.pickUpDistance > 0 || order.pickupEtaInMins > 0 || order.dropDistance > 0 || order.dropEtaInMins > 0)
 
@@ -217,7 +219,7 @@ fun OrderBannerView(
                             .width(8.dp)
             )
             Text(
-                    style = MaterialTheme.typography.bodyMedium.copy(
+                    style = MaterialTheme.typography.body2.copy(
                             fontSize = 14.sp,
                             fontWeight = FontWeight.Bold,
                             color = RdsColors.white,
@@ -262,7 +264,7 @@ fun MissedOrderUi(modifier: Modifier = Modifier, expiryReason: PreOrderUnavailab
             )
 
             Text(
-                    style = MaterialTheme.typography.bodyMedium.copy(
+                    style = MaterialTheme.typography.body2.copy(
                             fontSize = 17.sp,
                             fontWeight = FontWeight.Medium,
                             color = RdsColors.redBase
@@ -279,7 +281,7 @@ fun MissedOrderUi(modifier: Modifier = Modifier, expiryReason: PreOrderUnavailab
         }
         if (expiryReason==PreOrderUnavailableReason.ACCEPTED_BY_OTHER_CAPTAIN) {
             Text(
-                    style = MaterialTheme.typography.bodyMedium.copy(
+                    style = MaterialTheme.typography.body2.copy(
                             lineHeight = 16.sp,
                             color = RdsColors.neutrals8
                     ),
@@ -449,7 +451,7 @@ fun OrderItemPreview(@PreviewParameter(MultiOrderPreviewProvider::class) renderM
                 modifier = Modifier
                         .fillMaxWidth()
                         .padding(12.dp, 12.dp),
-                color = MaterialTheme.colorScheme.background
+                color = MaterialTheme.colors.background
         ) {
             Column(
                     modifier = Modifier

@@ -14,9 +14,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
+import androidx.compose.material.CircularProgressIndicator
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -65,7 +65,7 @@ fun AcceptButton(
             modifier = Modifier.padding(vertical = 8.dp, horizontal = 4.dp)
         ) {
             Text(
-                style = MaterialTheme.typography.bodyLarge.copy(
+                style = MaterialTheme.typography.body1.copy(
                     fontSize = 17.sp,
                     fontWeight = FontWeight.Bold,
                     color = RapidoTheme.colors.onSurface,
@@ -90,7 +90,7 @@ fun AcceptButton(
                             progress = if (maxProgress <= 0) 0.0f else progress / maxProgress,
                     )
                     Text(
-                        style = MaterialTheme.typography.bodyLarge.copy(
+                        style = MaterialTheme.typography.body1.copy(
                             fontWeight = FontWeight.Bold,
                             color = RdsColors.dark1,
                             lineHeight = 14.sp

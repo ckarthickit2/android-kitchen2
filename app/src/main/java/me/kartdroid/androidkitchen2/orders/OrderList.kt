@@ -1,5 +1,6 @@
 package me.kartdroid.androidkitchen2.orders
 
+//import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.infiniteRepeatable
@@ -26,14 +27,13 @@ import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Surface
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -83,7 +83,7 @@ fun OrderList(
     logOnCustomerTipFTuxViewed: () -> Unit,
     logCustomerTipFTuxClicked: () -> Unit
 ) {
-    var lazyColumnHeight by remember { mutableIntStateOf(0) }
+    var lazyColumnHeight by remember { mutableStateOf(0) }
     var showCallOutFloatingMessage by remember { mutableStateOf(false) }
     var callOutBannerOrder by remember { mutableStateOf(Pair(-1, MultiOrderUiItem.CallOutBanner.EMPTY)) }
     var tipFTuxViewedEventSent by remember { mutableStateOf(false) }
@@ -180,7 +180,7 @@ fun OrderList(
 @Composable
 fun getSnapFlingBehavior(lazyListState: LazyListState): FlingBehavior {
     val snappingLayout = remember(lazyListState) {
-        SnapLayoutInfoProvider(lazyListState = lazyListState, positionInLayout = { _, _, _ -> 0 })
+        SnapLayoutInfoProvider(lazyListState = lazyListState, positionInLayout = { _, _, _, _, _, -> 0 })
     }
     return rememberSnapFlingBehavior(snappingLayout)
 }
@@ -232,7 +232,7 @@ fun FloatingMessage(
                     .width(8.dp)
             )
             Text(
-                style = MaterialTheme.typography.bodyLarge.copy(
+                style = MaterialTheme.typography.body2.copy(
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Bold,
                     color = RdsColors.white,
@@ -266,7 +266,7 @@ fun OrderListPreview(@PreviewParameter(MultiOrderPreviewProvider::class) renderM
             modifier = Modifier
                     .fillMaxWidth()
                     .padding(12.dp, 12.dp),
-            color = MaterialTheme.colorScheme.background
+            color = MaterialTheme.colors.background
         ) {
             Column {
                 OrderList(

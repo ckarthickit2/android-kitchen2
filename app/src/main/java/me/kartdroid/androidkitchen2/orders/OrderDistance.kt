@@ -6,8 +6,8 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.width
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -39,7 +39,7 @@ fun OrderDistance(
 @Composable
 private fun OrderDistanceTitle(title: String) {
     Text(
-        style = MaterialTheme.typography.bodyMedium.copy(
+        style = MaterialTheme.typography.body2.copy(
             lineHeight = 20.sp,
             color = RapidoTheme.colors.onSurfaceDimVariant
         ),
@@ -55,7 +55,7 @@ private fun OrderDistance(
 ) {
     Text(
         modifier = Modifier.addTestTag(distanceTestTag),
-        style = MaterialTheme.typography.bodyLarge.copy(
+        style = MaterialTheme.typography.body1.copy(
             lineHeight = 20.sp,
             fontWeight = FontWeight.Bold,
             color = RapidoTheme.colors.onSurface

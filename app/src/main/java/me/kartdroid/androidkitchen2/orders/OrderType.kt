@@ -11,8 +11,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.ui.Alignment
@@ -138,7 +138,7 @@ private fun ServiceNameTag(serviceName: String) {
     ) {
         Text(
                 text = serviceName,
-                style = MaterialTheme.typography.bodySmall.copy(
+                style = MaterialTheme.typography.body2.copy(
                         letterSpacing = 0.4.sp,
                         lineHeight = 12.sp,
                         color = RapidoTheme.colors.secondaryContainer
@@ -155,7 +155,7 @@ private fun ServiceNameTag(serviceName: String) {
 private fun ServiceNameText(serviceName: String) {
     Text(
             text = serviceName,
-            style = MaterialTheme.typography.bodyLarge.copy(
+            style = MaterialTheme.typography.body1.copy(
                     letterSpacing = 0.4.sp,
                     lineHeight = 16.sp,
                     color = RapidoTheme.colors.onPrimaryContainer
@@ -177,7 +177,7 @@ private fun AmountAndPayment(
     ) {
         Text(
                 text = getPayableAmountText(amountWithoutExtra, extraAmount),
-                style = MaterialTheme.typography.bodyLarge.copy(
+                style = MaterialTheme.typography.body1.copy(
                         fontWeight = FontWeight.Bold,
                         color = RapidoTheme.colors.onPrimaryContainer
                 ),
@@ -201,7 +201,7 @@ private fun PaymentType(modifier: Modifier = Modifier, paymentType: String) {
     Text(
             modifier = modifier,
             text = getPaymentTypeText(paymentType = paymentType),
-            style = MaterialTheme.typography.labelLarge.copy(
+            style = MaterialTheme.typography.caption.copy(
                     fontWeight = FontWeight.Normal,
                     color = RapidoTheme.colors.onPrimaryContainer
             )
