@@ -2,8 +2,8 @@ package me.kartdroid.androidkitchen2.subscription.v2.ui.preview
 
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import me.kartdroid.androidkitchen2.subscription.models.AmountInfo
-import me.kartdroid.androidkitchen2.subscription.models.ConsumptionInfo
 import me.kartdroid.androidkitchen2.subscription.models.DurationInfo
+import me.kartdroid.androidkitchen2.subscription.models.EligibleConsumptionInfo
 import me.kartdroid.androidkitchen2.subscription.models.RuleType
 import me.kartdroid.androidkitchen2.subscription.models.SubscriptionV2
 
@@ -17,7 +17,7 @@ class AvailableSubsPreviewProvider : PreviewParameterProvider<SubscriptionV2> {
                     title = "Weekly Pass",
                     isRecommended = false,
                     ruleType = RuleType.ZERO_COMMISSION,
-                    consumptionInfo = ConsumptionInfo(
+                    eligibleConsumptionInfo = EligibleConsumptionInfo(
                             typeLabel = "Rides",
                             unitsLabel = "50"
                     ),
@@ -34,7 +34,7 @@ class AvailableSubsPreviewProvider : PreviewParameterProvider<SubscriptionV2> {
                     title = "Monthly Pass",
                     isRecommended = true,
                     ruleType = RuleType.VARIABLE_COMMISSION,
-                    consumptionInfo = ConsumptionInfo(
+                    eligibleConsumptionInfo = EligibleConsumptionInfo(
                             typeLabel = "Rides",
                             unitsLabel = "Unlimited"
                     ),

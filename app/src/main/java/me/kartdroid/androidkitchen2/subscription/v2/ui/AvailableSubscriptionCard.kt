@@ -128,7 +128,7 @@ fun SubscriptionInfoRow(subscription: SubscriptionV2) {
             modifier = Modifier.padding(start = 34.dp),
             verticalAlignment = Alignment.CenterVertically,
     ) {
-        with(subscription.consumptionInfo) {
+        with(subscription.eligibleConsumptionInfo) {
             UnitAndTypeInfo(
                     modifier = Modifier.weight(1f),
                     unitLabel = unitsLabel,

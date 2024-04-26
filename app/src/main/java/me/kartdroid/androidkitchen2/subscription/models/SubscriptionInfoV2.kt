@@ -12,13 +12,13 @@ data class SubscriptionV2(
         val title: String,
         val isRecommended: Boolean,
         val ruleType: RuleType,
-        val consumptionInfo: ConsumptionInfo,
+        val eligibleConsumptionInfo: EligibleConsumptionInfo,
         val durationInfo: DurationInfo,
         val amountInfo: AmountInfo,
 )
 
 
-data class ConsumptionInfo(
+data class EligibleConsumptionInfo(
         val typeLabel: String, //Earnings, Rides, Unlimited
         val unitsLabel: String, //₹ 1000, 10 , Unlimited
 )
@@ -32,6 +32,65 @@ data class AmountInfo(
         val currentPrice: String,
         val strikeOutPrice: String,
 )
+
+sealed interface PurchaseProgressedSubscription {
+    val title: String
+    val ruleType: RuleType
+    val eligibleConsumptionInfo: EligibleConsumptionInfo
+    val durationInfo: DurationInfo
+    val amountInfo: AmountInfo
+    val validityTag: SubscriptionInfo.ValidityTag
+    val purchaseProgressInfo: PurchaseProgressInfo
+}
+data class PurchasedSubscriptionV2(
+        override val title: String,
+        override val ruleType: RuleType,
+        override val eligibleConsumptionInfo: EligibleConsumptionInfo,
+        override val durationInfo: DurationInfo,
+        override val amountInfo: AmountInfo,
+        override val validityTag: SubscriptionInfo.ValidityTag,
+        override val purchaseProgressInfo: PurchaseProgressInfo,
+): PurchaseProgressedSubscription
+
+data class ActivatedSubscriptionV2(
+        override val title: String,
+        override val ruleType: RuleType,
+        override val eligibleConsumptionInfo: EligibleConsumptionInfo,
+        override val durationInfo: DurationInfo,
+        override val amountInfo: AmountInfo,
+        override val validityTag: SubscriptionInfo.ValidityTag,
+        override val purchaseProgressInfo: PurchaseProgressInfo,
+        //Activated Subs Properties
+        val consumptionInfo: SubsConsumptionInfo,
+        val expiryInfo: SubsExpiryInfo,
+        val commissionSavedInfo: CommissionSavedInfo,
+): PurchaseProgressedSubscription
+
+
+data class PurchaseProgressInfo(
+        val purchaseProgressLabel: String,
+        val transactionStatus: PurchaseTransactionStatus,
+)
+
+data class SubsConsumptionInfo(
+        val consumedUnitsLabel: String
+)
+
+data class SubsExpiryInfo(
+        val dateLabel: String,
+        val timeLabel: String,
+)
+
+data class CommissionSavedInfo(
+        val savedAmountLabel: String,
+        val caption: String,
+)
+
+enum class PurchaseTransactionStatus {
+    PROCESSING,
+    COMPLETE,
+    FAILED
+}
 
 @Serializable
 enum class RuleType {

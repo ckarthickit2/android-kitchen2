@@ -1,0 +1,203 @@
+package me.kartdroid.androidkitchen2.subscription.v2.ui
+
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.LocalAbsoluteElevation
+import androidx.compose.material.MaterialTheme
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewParameter
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.rapido.rapidodesignsystem.components.RdsRibbon
+import com.rapido.rapidodesignsystem.components.icon.DynamicIconLoader
+import com.rapido.rapidodesignsystem.components.progress.LinearProgressBar
+import com.rapido.rapidodesignsystem.components.progress.LinearProgressBarShape
+import com.rapido.rapidodesignsystem.components.text.RdsTextType
+import com.rapido.rapidodesignsystem.components.text.RdsTextView
+import com.rapido.rapidodesignsystem.theme.RapidoDefaultOrderColors
+import com.rapido.rapidodesignsystem.theme.RapidoLocalColors
+import com.rapido.rapidodesignsystem.theme.RapidoTheme
+import com.rapido.rapidodesignsystem.tokens.base.RdsColors
+import me.kartdroid.androidkitchen2.R
+import me.kartdroid.androidkitchen2.subscription.models.PurchaseProgressedSubscription
+import me.kartdroid.androidkitchen2.subscription.v2.ui.preview.PurchaseProgressedSubscriptionPreviewProvider
+
+/**
+ * @author [Karthick Chinnathambi](https://github.com/karthick-rapido)
+ * @since 26/04/24
+ */
+@Composable
+fun PurchasedSubscriptionCard(
+    modifier: Modifier = Modifier,
+    subscription: PurchaseProgressedSubscription,
+) {
+    val absoluteElevation = LocalAbsoluteElevation.current + 4.dp
+    val shape = RoundedCornerShape(8.dp)
+    Box(
+        modifier = modifier
+            .shadow(elevation = absoluteElevation, shape = shape, clip = false)
+            .background(color = MaterialTheme.colors.surface, shape = shape)
+            .fillMaxWidth(),
+    ) {
+        RdsRibbon(
+            modifier = Modifier
+                .align(Alignment.TopEnd)
+                .offset(x = 6.dp, y = 8.dp),
+            text = "Active",
+            iconUrl = "",
+            iconAssetsSearchPath = "file:///android_asset/common-assets/",
+            fallbackDrawableRes = R.drawable.ic_check_circle_green,
+        )
+        Column {
+
+            SubscriptionStatusSection(
+                subscription = subscription,
+                modifier = Modifier
+                    .fillMaxWidth()
+            )
+            SubscriptionProgressBar()
+            SubscriptionProgressSection(
+                subscription = subscription,
+                modifier = Modifier
+                    .fillMaxWidth()
+            )
+        }
+    }
+}
+
+@Composable
+fun SubscriptionStatusSection(
+    modifier: Modifier = Modifier,
+    subscription: PurchaseProgressedSubscription,
+) {
+    Column(
+        modifier = modifier.padding(start = 16.dp, top = 16.dp)
+    ) {
+        RdsTextView(
+            text = subscription.title,
+            type = RdsTextType.Custom(
+                TextStyle(
+                    fontSize = 18.sp,
+                    lineHeight = 28.sp,
+                    fontFamily = FontFamily(Font(R.font.noto_sans_regular)),
+                    fontWeight = FontWeight(600),
+                )
+
+            ),
+        )
+        Row(
+            modifier = Modifier.padding(top = 4.dp),
+        ) {
+            RdsTextView(
+                text = "₹ 124 Paid",
+                type = RdsTextType.Custom(
+                    TextStyle(
+                        fontSize = 12.sp,
+                        lineHeight = 16.sp,
+                        fontFamily = FontFamily(Font(R.font.noto_sans_regular)),
+                        fontWeight = FontWeight(400),
+                    )
+                )
+            )
+            DynamicIconLoader(
+                iconPath = "assets://double_tick.xml",
+                modifier = Modifier
+                    .padding(start = 4.dp)
+                    .size(16.dp),
+                assetPath = "file:///android_asset/payments/",
+                fallbackDrawableRes = R.drawable.double_tick
+            )
+            Spacer(modifier = Modifier.weight(1f))
+            RdsTextView(
+                modifier = Modifier.padding(end = 8.dp, bottom = 12.dp),
+                text = "Until 12/04/24\n 10:00am",
+                type = RdsTextType.Custom(
+                    TextStyle(
+                        fontSize = 12.sp,
+                        lineHeight = 16.sp,
+                        fontFamily = FontFamily(Font(R.font.noto_sans_regular)),
+                        fontWeight = FontWeight(400),
+                        textAlign = TextAlign.Right
+                    )
+                )
+            )
+        }
+    }
+}
+
+@Composable
+fun SubscriptionProgressBar() {
+    LinearProgressBar(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(8.dp),
+        backgroundColor = RapidoTheme.colors.onSurfaceDimVariant,
+        progressColor = RapidoTheme.colors.onSurfaceVariant,
+        progress = 40f / 100f,
+        progressCornerRadius = 16.dp,
+        progressBarShape = LinearProgressBarShape.ROUNDED_PROGRESS_ONLY
+    )
+}
+
+@Composable
+fun SubscriptionProgressSection(
+    modifier: Modifier,
+    subscription: PurchaseProgressedSubscription,
+) {
+    Row(
+        modifier = modifier
+            .background(RapidoTheme.colors.secondarySurface)
+            .padding(horizontal = 14.dp, vertical = 8.dp)
+    ) {
+        UnitAndTypeInfo(
+            unitLabel = "₹490 / ₹10,000",
+            typeLabel = "Earnings"
+        )
+        Spacer(modifier = Modifier.weight(1f))
+        UnitAndTypeInfo(unitLabel = "₹34", typeLabel = "saved so far")
+    }
+}
+
+
+@Preview
+@Composable
+fun PurchasedSubscriptionCardPreview(@PreviewParameter(PurchaseProgressedSubscriptionPreviewProvider::class) subscription: PurchaseProgressedSubscription) {
+    Box(
+        modifier = Modifier
+            .background(RdsColors.gray_50)
+            .padding(24.dp)
+            .wrapContentHeight()
+    ) {
+        CompositionLocalProvider(
+            RapidoLocalColors provides RapidoDefaultOrderColors.copy(
+                secondaryContainer = RdsColors.green2,
+                onSecondaryContainer = RdsColors.white,
+                onSurfaceVariant = RdsColors.greenDark500,
+                onSurfaceDimVariant = RdsColors.green100,
+                secondarySurface = RdsColors.greenLight,
+            )
+        ) {
+            PurchasedSubscriptionCard(subscription = subscription)
+        }
+    }
+}
