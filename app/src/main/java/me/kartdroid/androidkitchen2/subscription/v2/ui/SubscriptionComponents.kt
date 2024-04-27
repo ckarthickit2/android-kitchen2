@@ -12,18 +12,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.Font
-import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.rapido.rapidodesignsystem.components.text.RdsTextType
 import com.rapido.rapidodesignsystem.components.text.RdsTextView
 import com.rapido.rapidodesignsystem.theme.RapidoTheme
 import com.rapido.rapidodesignsystem.tokens.base.RdsColors
-import me.kartdroid.androidkitchen2.R
 import me.kartdroid.androidkitchen2.subscription.models.SubscriptionV2
 
 /**
@@ -98,26 +94,17 @@ fun UnitAndTypeInfo(
     ) {
         RdsTextView(
             text = unitLabel,
-            type = RdsTextType.Custom(
-                TextStyle(
-                    fontSize = 16.sp,
-                    lineHeight = 20.sp,
-                    fontFamily = FontFamily(Font(R.font.noto_sans_regular)),
-                    fontWeight = FontWeight(500),
-                )
+            style = RdsTextType.LabelSmall.typography.copy(
+                fontSize = 16.sp,
+                letterSpacing = TextUnit.Unspecified,
             )
         )
         RdsTextView(
             text = typeLabel,
-            type = RdsTextType.Custom(
-                TextStyle(
-                    fontSize = 12.sp,
-                    lineHeight = 16.sp,
-                    fontFamily = FontFamily(Font(R.font.noto_sans_regular)),
-                    fontWeight = FontWeight(400),
-                    color = RdsColors.gray1000,
-                    textDecoration = if (strikeThroughTypeLabel) TextDecoration.LineThrough else TextDecoration.None
-                )
+            style = RdsTextType.BodySmall.typography.copy(
+                lineHeight = 20.sp,
+                color = RdsColors.gray1000,
+                textDecoration = if (strikeThroughTypeLabel) TextDecoration.LineThrough else TextDecoration.None
             )
         )
     }

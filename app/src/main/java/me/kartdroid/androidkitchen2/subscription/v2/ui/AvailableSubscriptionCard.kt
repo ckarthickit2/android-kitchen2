@@ -23,8 +23,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.Font
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -37,6 +35,7 @@ import com.rapido.rapidodesignsystem.components.text.RdsTextType
 import com.rapido.rapidodesignsystem.components.text.RdsTextView
 import com.rapido.rapidodesignsystem.theme.RapidoDefaultOrderColors
 import com.rapido.rapidodesignsystem.theme.RapidoLocalColors
+import com.rapido.rapidodesignsystem.theme.RapidoTheme
 import com.rapido.rapidodesignsystem.tokens.base.RdsColors
 import me.kartdroid.androidkitchen2.R
 import me.kartdroid.androidkitchen2.subscription.models.AvailableSubscription
@@ -72,8 +71,7 @@ fun AvailableSubscriptionCard(
                 TextStyle(
                     fontSize = 10.sp,
                     lineHeight = 16.sp,
-                    fontFamily = FontFamily(Font(R.font.noto_sans_regular)),
-                    fontWeight = FontWeight(500),
+                    fontWeight = FontWeight.Medium,
                     color = RdsColors.white,
                     textAlign = TextAlign.Center
                 )
@@ -109,15 +107,9 @@ fun SelectionAndLabelRow(subscription: AvailableSubscription) {
         Spacer(modifier = Modifier.width(16.dp))
         RdsTextView(
             text = subscription.title,
-            type = RdsTextType.Custom(
-                TextStyle(
-                    fontSize = 14.sp,
-                    lineHeight = 20.sp,
-                    fontFamily = FontFamily(Font(R.font.noto_sans_regular)),
-                    fontWeight = FontWeight(700),
-                )
-
-            ),
+            style = RdsTextType.DisplaySmall.typography.copy(
+                fontSize = 14.sp
+            )
         )
     }
 }
@@ -132,12 +124,14 @@ fun AvailableSubscriptionCardPreview(@PreviewParameter(AvailableSubsPreviewProvi
             .padding(24.dp)
             .height(100.dp)
     ) {
-        CompositionLocalProvider(
-            RapidoLocalColors provides RapidoDefaultOrderColors.copy(
-                onSurfaceDimVariant = RdsColors.gray100,
-            )
-        ) {
-            AvailableSubscriptionCard(subscription = subscription)
+        RapidoTheme {
+            CompositionLocalProvider(
+                RapidoLocalColors provides RapidoDefaultOrderColors.copy(
+                    onSurfaceDimVariant = RdsColors.gray100,
+                )
+            ) {
+                AvailableSubscriptionCard(subscription = subscription)
+            }
         }
     }
 

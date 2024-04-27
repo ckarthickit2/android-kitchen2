@@ -17,10 +17,6 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.Font
-import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
@@ -36,7 +32,6 @@ import com.rapido.rapidodesignsystem.theme.RapidoDefaultOrderColors
 import com.rapido.rapidodesignsystem.theme.RapidoLocalColors
 import com.rapido.rapidodesignsystem.theme.RapidoTheme
 import com.rapido.rapidodesignsystem.tokens.base.RdsColors
-import me.kartdroid.androidkitchen2.R
 import me.kartdroid.androidkitchen2.subscription.models.ActivatedSubscriptionV2
 import me.kartdroid.androidkitchen2.subscription.models.PurchaseProgressedSubscription
 import me.kartdroid.androidkitchen2.subscription.v2.ui.preview.PurchaseProgressedSubscriptionPreviewProvider
@@ -106,29 +101,16 @@ fun SubscriptionStatusSection(
     ) {
         RdsTextView(
             text = subscription.title,
-            type = RdsTextType.Custom(
-                TextStyle(
-                    fontSize = 18.sp,
-                    lineHeight = 28.sp,
-                    fontFamily = FontFamily(Font(R.font.noto_sans_regular)),
-                    fontWeight = FontWeight(600),
-                )
-
-            ),
+            style = RdsTextType.TitleSmall.typography.copy(
+                fontSize = 18.sp
+            )
         )
         Row(
             modifier = Modifier.padding(top = 4.dp),
         ) {
             RdsTextView(
                 text = subscription.purchaseProgressInfo.purchaseProgressLabel,
-                type = RdsTextType.Custom(
-                    TextStyle(
-                        fontSize = 12.sp,
-                        lineHeight = 16.sp,
-                        fontFamily = FontFamily(Font(R.font.noto_sans_regular)),
-                        fontWeight = FontWeight(400),
-                    )
-                )
+                style = RdsTextType.BodySmall.typography
             )
             DynamicIconLoader(
                 iconPath = "assets://double_tick.xml",
@@ -142,14 +124,8 @@ fun SubscriptionStatusSection(
             RdsTextView(
                 modifier = Modifier.padding(end = 8.dp, bottom = 12.dp),
                 text = if (subscription is ActivatedSubscriptionV2) "${subscription.expiryInfo.dateLabel}\n${subscription.expiryInfo.timeLabel}" else " \n ",
-                type = RdsTextType.Custom(
-                    TextStyle(
-                        fontSize = 12.sp,
-                        lineHeight = 16.sp,
-                        fontFamily = FontFamily(Font(R.font.noto_sans_regular)),
-                        fontWeight = FontWeight(400),
-                        textAlign = TextAlign.Right
-                    )
+                style = RdsTextType.BodySmall.typography.copy(
+                    textAlign = TextAlign.Right
                 )
             )
         }
@@ -201,16 +177,18 @@ fun PurchasedSubscriptionCardPreview(@PreviewParameter(PurchaseProgressedSubscri
             .padding(24.dp)
             .height(152.dp)
     ) {
-        CompositionLocalProvider(
-            RapidoLocalColors provides RapidoDefaultOrderColors.copy(
-                secondaryContainer = RdsColors.green2,
-                onSecondaryContainer = RdsColors.white,
-                onSurfaceVariant = RdsColors.greenDark500,
-                onSurfaceDimVariant = RdsColors.green200,
-                secondarySurface = RdsColors.greenLight,
-            )
-        ) {
-            PurchasedSubscriptionCard(subscription = subscription)
+        RapidoTheme {
+            CompositionLocalProvider(
+                RapidoLocalColors provides RapidoDefaultOrderColors.copy(
+                    secondaryContainer = RdsColors.green2,
+                    onSecondaryContainer = RdsColors.white,
+                    onSurfaceVariant = RdsColors.greenDark500,
+                    onSurfaceDimVariant = RdsColors.green200,
+                    secondarySurface = RdsColors.greenLight,
+                )
+            ) {
+                PurchasedSubscriptionCard(subscription = subscription)
+            }
         }
     }
 }
