@@ -22,13 +22,13 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.rapido.rapidodesignsystem.colors.RapidoThemeColors
 import com.rapido.rapidodesignsystem.components.RdsRibbon
 import com.rapido.rapidodesignsystem.components.icon.DynamicIconLoader
 import com.rapido.rapidodesignsystem.components.progress.LinearProgressBar
 import com.rapido.rapidodesignsystem.components.progress.LinearProgressBarShape
 import com.rapido.rapidodesignsystem.components.text.RdsTextType
 import com.rapido.rapidodesignsystem.components.text.RdsTextView
-import com.rapido.rapidodesignsystem.theme.RapidoDefaultOrderColors
 import com.rapido.rapidodesignsystem.theme.RapidoLocalColors
 import com.rapido.rapidodesignsystem.theme.RapidoTheme
 import com.rapido.rapidodesignsystem.tokens.base.RdsColors
@@ -159,18 +159,29 @@ fun SubscriptionProgressSection(
             .padding(horizontal = 14.dp, vertical = 8.dp)
     ) {
         UnitAndTypeInfo(
+            unitLabelStyle = RdsTextType.LabelLarge.typography.copy(
+                fontSize = 14.sp,
+            ),
             unitLabel = "${subscription.consumptionInfo.consumedUnitsLabel} / ${subscription.eligibleConsumptionInfo.unitsLabel}",
             typeLabel = subscription.eligibleConsumptionInfo.typeLabel
         )
         Spacer(modifier = Modifier.weight(1f))
-        UnitAndTypeInfo(unitLabel = subscription.commissionSavedInfo.savedAmountLabel, typeLabel = subscription.commissionSavedInfo.caption)
+        UnitAndTypeInfo(
+            horizontalAlignment = Alignment.End,
+            unitLabelStyle = RdsTextType.LabelLarge.typography.copy(
+                fontSize = 14.sp,
+            ),
+            unitLabel = subscription.commissionSavedInfo.savedAmountLabel,
+            typeLabel = subscription.commissionSavedInfo.caption,
+        )
     }
 }
 
 
 @Preview
 @Composable
-fun PurchasedSubscriptionCardPreview(@PreviewParameter(PurchaseProgressedSubscriptionPreviewProvider::class) subscription: PurchaseProgressedSubscription) {
+fun PurchasedSubscriptionCardPreview(@PreviewParameter(PurchaseProgressedSubscriptionPreviewProvider::class) subscriptionAndTheme: Pair<PurchaseProgressedSubscription, RapidoThemeColors>) {
+    val (subscription, theme) = subscriptionAndTheme
     Box(
         modifier = Modifier
             .background(RdsColors.gray_50)
@@ -179,13 +190,7 @@ fun PurchasedSubscriptionCardPreview(@PreviewParameter(PurchaseProgressedSubscri
     ) {
         RapidoTheme {
             CompositionLocalProvider(
-                RapidoLocalColors provides RapidoDefaultOrderColors.copy(
-                    secondaryContainer = RdsColors.green2,
-                    onSecondaryContainer = RdsColors.white,
-                    onSurfaceVariant = RdsColors.greenDark500,
-                    onSurfaceDimVariant = RdsColors.green200,
-                    secondarySurface = RdsColors.greenLight,
-                )
+                RapidoLocalColors provides theme
             ) {
                 PurchasedSubscriptionCard(subscription = subscription)
             }

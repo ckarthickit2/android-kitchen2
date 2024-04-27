@@ -12,6 +12,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
@@ -76,6 +77,9 @@ fun SubscriptionInfoRow(
                 strikeThroughTypeLabel = true,
                 unitLabel = currentPrice,
                 typeLabel = strikeOutPrice,
+                unitLabelStyle = RdsTextType.LabelLarge.typography.copy(
+                    fontSize = 16.sp,
+                )
             )
         }
     }
@@ -85,19 +89,21 @@ fun SubscriptionInfoRow(
 fun UnitAndTypeInfo(
     modifier: Modifier = Modifier,
     strikeThroughTypeLabel: Boolean = false,
+    horizontalAlignment: Alignment.Horizontal = Alignment.Start,
+    unitLabelStyle: TextStyle = RdsTextType.LabelSmall.typography.copy(
+        fontSize = 16.sp,
+        letterSpacing = TextUnit.Unspecified,
+    ),
     unitLabel: String,
     typeLabel: String,
 ) {
     Column(
         modifier = modifier,
-        horizontalAlignment = Alignment.Start,
+        horizontalAlignment = horizontalAlignment,
     ) {
         RdsTextView(
             text = unitLabel,
-            style = RdsTextType.LabelSmall.typography.copy(
-                fontSize = 16.sp,
-                letterSpacing = TextUnit.Unspecified,
-            )
+            style = unitLabelStyle,
         )
         RdsTextView(
             text = typeLabel,

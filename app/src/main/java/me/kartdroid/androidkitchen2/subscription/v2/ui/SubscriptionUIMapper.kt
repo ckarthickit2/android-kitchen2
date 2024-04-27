@@ -17,6 +17,7 @@ fun ValidityTagInfo.indicatorDrawable(): Int  {
         SubscriptionInfo.ValidityTag.ACTIVE -> R.drawable.ic_check_circle_green
         SubscriptionInfo.ValidityTag.STARTS_SOON -> R.drawable.ic_right_turn
         SubscriptionInfo.ValidityTag.PROCESSING -> R.drawable.ic_processing
+        SubscriptionInfo.ValidityTag.EXPIRING_SOON, SubscriptionInfo.ValidityTag.EXPIRED -> R.drawable.ic_info_red
         else -> R.drawable.ic_circular_shape_black
     }
 }
