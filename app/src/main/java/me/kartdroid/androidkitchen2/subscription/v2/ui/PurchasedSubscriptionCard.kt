@@ -62,10 +62,10 @@ fun PurchasedSubscriptionCard(
             modifier = Modifier
                 .align(Alignment.TopEnd)
                 .offset(x = 6.dp, y = 8.dp),
-            text = "Active",
+            text = subscription.validityTagInfo.label,
             iconUrl = "",
             iconAssetsSearchPath = "file:///android_asset/common-assets/",
-            fallbackDrawableRes = R.drawable.ic_check_circle_green,
+            fallbackDrawableRes = subscription.validityTagInfo.indicatorDrawable(),
         )
         Column {
             SubscriptionStatusSection(
@@ -73,7 +73,13 @@ fun PurchasedSubscriptionCard(
                 modifier = Modifier
                     .fillMaxWidth()
             )
-            SubscriptionProgressBar()
+            SubscriptionProgressBar(
+                if (subscription is ActivatedSubscriptionV2) {
+                    subscription.consumptionInfo.consumedUnits / subscription.eligibleConsumptionInfo.units
+                } else {
+                    0.03f
+                }
+            )
             if (subscription is ActivatedSubscriptionV2) {
                 SubscriptionProgressSection(
                     subscription = subscription,
@@ -114,7 +120,7 @@ fun SubscriptionStatusSection(
             modifier = Modifier.padding(top = 4.dp),
         ) {
             RdsTextView(
-                text = "₹ 124 Paid",
+                text = subscription.purchaseProgressInfo.purchaseProgressLabel,
                 type = RdsTextType.Custom(
                     TextStyle(
                         fontSize = 12.sp,
@@ -130,12 +136,12 @@ fun SubscriptionStatusSection(
                     .padding(start = 4.dp)
                     .size(16.dp),
                 assetPath = "file:///android_asset/payments/",
-                fallbackDrawableRes = R.drawable.double_tick
+                fallbackDrawableRes = subscription.purchaseProgressInfo.transactionStatus.indicatorDrawable()
             )
             Spacer(modifier = Modifier.weight(1f))
             RdsTextView(
                 modifier = Modifier.padding(end = 8.dp, bottom = 12.dp),
-                text = "Until 12/04/24\n 10:00am",
+                text = if (subscription is ActivatedSubscriptionV2) "${subscription.expiryInfo.dateLabel}\n${subscription.expiryInfo.timeLabel}" else " \n ",
                 type = RdsTextType.Custom(
                     TextStyle(
                         fontSize = 12.sp,
@@ -151,14 +157,16 @@ fun SubscriptionStatusSection(
 }
 
 @Composable
-fun SubscriptionProgressBar() {
+fun SubscriptionProgressBar(
+    progress: Float
+) {
     LinearProgressBar(
         modifier = Modifier
             .fillMaxWidth()
             .height(8.dp),
         backgroundColor = RapidoTheme.colors.onSurfaceDimVariant,
         progressColor = RapidoTheme.colors.onSurfaceVariant,
-        progress = 40f / 100f,
+        progress = progress,
         progressCornerRadius = 16.dp,
         progressBarShape = LinearProgressBarShape.ROUNDED_PROGRESS_ONLY
     )
@@ -167,7 +175,7 @@ fun SubscriptionProgressBar() {
 @Composable
 fun SubscriptionProgressSection(
     modifier: Modifier,
-    subscription: PurchaseProgressedSubscription,
+    subscription: ActivatedSubscriptionV2,
 ) {
     Row(
         modifier = modifier
@@ -175,11 +183,11 @@ fun SubscriptionProgressSection(
             .padding(horizontal = 14.dp, vertical = 8.dp)
     ) {
         UnitAndTypeInfo(
-            unitLabel = "₹490 / ₹10,000",
-            typeLabel = "Earnings"
+            unitLabel = "${subscription.consumptionInfo.consumedUnitsLabel} / ${subscription.eligibleConsumptionInfo.unitsLabel}",
+            typeLabel = subscription.eligibleConsumptionInfo.typeLabel
         )
         Spacer(modifier = Modifier.weight(1f))
-        UnitAndTypeInfo(unitLabel = "₹34", typeLabel = "saved so far")
+        UnitAndTypeInfo(unitLabel = subscription.commissionSavedInfo.savedAmountLabel, typeLabel = subscription.commissionSavedInfo.caption)
     }
 }
 

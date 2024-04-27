@@ -24,7 +24,7 @@ fun SubscriptionInfo.ValidityTag.getTagColor(): Color {
         SubscriptionInfo.ValidityTag.ACTIVE -> RdsColors.greenDark1
         SubscriptionInfo.ValidityTag.EXPIRING_SOON -> RdsColors.lightRed5
         SubscriptionInfo.ValidityTag.EXPIRED -> RdsColors.darkRed1
-        SubscriptionInfo.ValidityTag.NO_TAG -> RdsColors.transparent
+        else -> RdsColors.transparent
     }
 }
 
@@ -34,7 +34,7 @@ fun SubscriptionInfo.ValidityTag.getTagColorString(): Int {
         SubscriptionInfo.ValidityTag.ACTIVE -> RdsColors.greenDark1.toNativeColor()
         SubscriptionInfo.ValidityTag.EXPIRING_SOON -> RdsColors.lightRed5.toNativeColor()
         SubscriptionInfo.ValidityTag.EXPIRED -> RdsColors.darkRed1.toNativeColor()
-        SubscriptionInfo.ValidityTag.NO_TAG -> RdsColors.transparent.toNativeColor()
+        else -> RdsColors.transparent.toNativeColor()
     }
 }
 
@@ -53,7 +53,7 @@ fun SubscriptionInfo.ValidityTag.getTagText(): Int {
         SubscriptionInfo.ValidityTag.ACTIVE -> R.string.active_status
         SubscriptionInfo.ValidityTag.EXPIRING_SOON -> R.string.expiring_soon_status
         SubscriptionInfo.ValidityTag.EXPIRED -> R.string.expired_status
-        SubscriptionInfo.ValidityTag.NO_TAG -> R.string.no
+        else -> R.string.no
     }
 }
 
@@ -63,7 +63,7 @@ fun SubscriptionInfo.ValidityTag.getTagIcon(): RdsIconDrawableConfig {
         SubscriptionInfo.ValidityTag.ACTIVE -> RdsIconDrawableConfig(drawable = R.drawable.ic_check_circle)
         SubscriptionInfo.ValidityTag.EXPIRING_SOON -> RdsIconDrawableConfig(drawable = R.drawable.ic_check_circle)
         SubscriptionInfo.ValidityTag.EXPIRED -> RdsIconDrawableConfig(drawable = R.drawable.cross)
-        SubscriptionInfo.ValidityTag.NO_TAG -> RdsIconDrawableConfig(drawable = R.drawable.ic_check_circle)
+        else -> RdsIconDrawableConfig(drawable = R.drawable.ic_check_circle)
     }
 }
 
@@ -73,6 +73,7 @@ fun SubscriptionInfo.ValidityTag.getTagIcon(context: Context): Drawable? {
         SubscriptionInfo.ValidityTag.ACTIVE -> ContextCompat.getDrawable(context, R.drawable.ic_check_circle)
         SubscriptionInfo.ValidityTag.EXPIRING_SOON -> ContextCompat.getDrawable(context, R.drawable.ic_check_circle)
         SubscriptionInfo.ValidityTag.EXPIRED -> ContextCompat.getDrawable(context, R.drawable.cross)
-        SubscriptionInfo.ValidityTag.NO_TAG -> ContextCompat.getDrawable(context, R.drawable.ic_check_circle)
+        else -> ContextCompat.getDrawable(context, R.drawable.ic_check_circle)
+
     }
 }

@@ -14,6 +14,7 @@ import me.kartdroid.androidkitchen2.subscription.models.RuleType
 import me.kartdroid.androidkitchen2.subscription.models.SubsConsumptionInfo
 import me.kartdroid.androidkitchen2.subscription.models.SubsExpiryInfo
 import me.kartdroid.androidkitchen2.subscription.models.SubscriptionInfo
+import me.kartdroid.androidkitchen2.subscription.models.ValidityTagInfo
 
 /**
  * @author [Karthick Chinnathambi](https://github.com/karthick-rapido)
@@ -22,59 +23,68 @@ import me.kartdroid.androidkitchen2.subscription.models.SubscriptionInfo
 
 class PurchaseProgressedSubscriptionPreviewProvider : PreviewParameterProvider<PurchaseProgressedSubscription> {
     override val values: Sequence<PurchaseProgressedSubscription> = sequenceOf(
-            ActivatedSubscriptionV2(
-                    title = "Ramzaan Special",
-                    ruleType = RuleType.ZERO_COMMISSION,
-                    eligibleConsumptionInfo = EligibleConsumptionInfo(
-                            typeLabel = "Earnings",
-                            unitsLabel = "₹10,000"
-                    ),
-                    durationInfo = DurationInfo(
-                            typeLabel = "Month",
-                            unitsLabel = "1"
-                    ),
-                    amountInfo = AmountInfo(
-                            currentPrice = "₹ 125",
-                            strikeOutPrice = "₹ 250"
-                    ),
-                    validityTag = SubscriptionInfo.ValidityTag.ACTIVE,
-                    purchaseProgressInfo = PurchaseProgressInfo(
-                            purchaseProgressLabel = "",
-                            transactionStatus = PurchaseTransactionStatus.COMPLETE,
-                    ),
-                    consumptionInfo = SubsConsumptionInfo(
-                            consumedUnitsLabel = "₹7046"
-                    ),
-                    expiryInfo = SubsExpiryInfo(
-                            dateLabel = "On 12/04/24",
-                            timeLabel = "10:00am"
-                    ),
-                    commissionSavedInfo = CommissionSavedInfo(
-                            savedAmountLabel = "₹ 258",
-                            caption = "saved so far"
-                    ),
+        ActivatedSubscriptionV2(
+            title = "Ramzaan Special",
+            ruleType = RuleType.ZERO_COMMISSION,
+            eligibleConsumptionInfo = EligibleConsumptionInfo(
+                typeLabel = "Earnings",
+                unitsLabel = "₹10,000",
+                units = 10000f,
             ),
-            PurchasedSubscriptionV2(
-                    title = "Weekend Special",
-                    ruleType = RuleType.ZERO_COMMISSION,
-                    eligibleConsumptionInfo = EligibleConsumptionInfo(
-                            typeLabel = "Rides",
-                            unitsLabel = "20"
-                    ),
-                    durationInfo = DurationInfo(
-                            typeLabel = "Month",
-                            unitsLabel = "1"
-                    ),
-                    amountInfo = AmountInfo(
-                            currentPrice = "₹ 125",
-                            strikeOutPrice = "₹ 250"
-                    ),
-                    validityTag = SubscriptionInfo.ValidityTag.STARTS_SOON,
-                    purchaseProgressInfo = PurchaseProgressInfo(
-                            purchaseProgressLabel = "₹500 paid",
-                            transactionStatus = PurchaseTransactionStatus.COMPLETE,
-                    ),
-            )
+            durationInfo = DurationInfo(
+                typeLabel = "Month",
+                unitsLabel = "1"
+            ),
+            amountInfo = AmountInfo(
+                currentPrice = "₹ 125",
+                strikeOutPrice = "₹ 250"
+            ),
+            validityTagInfo = ValidityTagInfo(
+                tag = SubscriptionInfo.ValidityTag.ACTIVE,
+                label = "Active",
+            ),
+            purchaseProgressInfo = PurchaseProgressInfo(
+                purchaseProgressLabel = "₹124 Paid",
+                transactionStatus = PurchaseTransactionStatus.COMPLETE,
+            ),
+            consumptionInfo = SubsConsumptionInfo(
+                consumedUnitsLabel = "₹7046",
+                consumedUnits = 7046f
+            ),
+            expiryInfo = SubsExpiryInfo(
+                dateLabel = "Until 12/04/24",
+                timeLabel = "10:00 am"
+            ),
+            commissionSavedInfo = CommissionSavedInfo(
+                savedAmountLabel = "₹258",
+                caption = "saved so far"
+            ),
+        ),
+        PurchasedSubscriptionV2(
+            title = "Weekend Special",
+            ruleType = RuleType.VARIABLE_COMMISSION,
+            eligibleConsumptionInfo = EligibleConsumptionInfo(
+                typeLabel = "Rides",
+                unitsLabel = "20",
+                units = 20f,
+            ),
+            durationInfo = DurationInfo(
+                typeLabel = "Month",
+                unitsLabel = "1"
+            ),
+            amountInfo = AmountInfo(
+                currentPrice = "₹ 125",
+                strikeOutPrice = "₹ 250"
+            ),
+            validityTagInfo = ValidityTagInfo(
+                tag = SubscriptionInfo.ValidityTag.STARTS_SOON,
+                label = "Starts Soon"
+            ),
+            purchaseProgressInfo = PurchaseProgressInfo(
+                purchaseProgressLabel = "₹500 paid",
+                transactionStatus = PurchaseTransactionStatus.PROCESSING,
+            ),
+        )
     )
 
 

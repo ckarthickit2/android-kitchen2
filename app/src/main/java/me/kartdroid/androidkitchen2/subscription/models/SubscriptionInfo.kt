@@ -71,7 +71,7 @@ data class SubscriptionInfo(
     )
 
     enum class ValidityTag {
-        STARTS_SOON, ACTIVE, EXPIRING_SOON, EXPIRED, NO_TAG;
+        PROCESSING, STARTS_SOON, ACTIVE, EXPIRING_SOON, EXPIRED, NO_TAG;
 
         companion object {
             private val map = values().associateBy { it.name.lowercase() }
