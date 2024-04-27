@@ -5,15 +5,15 @@ import me.kartdroid.androidkitchen2.subscription.models.AmountInfo
 import me.kartdroid.androidkitchen2.subscription.models.DurationInfo
 import me.kartdroid.androidkitchen2.subscription.models.EligibleConsumptionInfo
 import me.kartdroid.androidkitchen2.subscription.models.RuleType
-import me.kartdroid.androidkitchen2.subscription.models.SubscriptionV2
+import me.kartdroid.androidkitchen2.subscription.models.AvailableSubscription
 
 /**
  * @author [Karthick Chinnathambi](https://github.com/karthick-rapido)
  * @since 26/04/24
  */
-class AvailableSubsPreviewProvider : PreviewParameterProvider<SubscriptionV2> {
-    override val values: Sequence<SubscriptionV2> = sequenceOf(
-            SubscriptionV2(
+class AvailableSubsPreviewProvider : PreviewParameterProvider<AvailableSubscription> {
+    override val values: Sequence<AvailableSubscription> = sequenceOf(
+            AvailableSubscription(
                     title = "Weekly Pass",
                     isRecommended = false,
                     ruleType = RuleType.ZERO_COMMISSION,
@@ -30,7 +30,7 @@ class AvailableSubsPreviewProvider : PreviewParameterProvider<SubscriptionV2> {
                             currentPrice = "₹299",
                     )
             ),
-            SubscriptionV2(
+            AvailableSubscription(
                     title = "Monthly Pass",
                     isRecommended = true,
                     ruleType = RuleType.VARIABLE_COMMISSION,

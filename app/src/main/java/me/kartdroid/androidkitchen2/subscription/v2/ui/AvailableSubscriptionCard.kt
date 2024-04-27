@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -15,6 +14,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.LocalAbsoluteElevation
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -27,7 +27,6 @@ import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
@@ -36,9 +35,11 @@ import com.rapido.rapidodesignsystem.components.icon.RdsIcon
 import com.rapido.rapidodesignsystem.components.icon.RdsIconConfig
 import com.rapido.rapidodesignsystem.components.text.RdsTextType
 import com.rapido.rapidodesignsystem.components.text.RdsTextView
+import com.rapido.rapidodesignsystem.theme.RapidoDefaultOrderColors
+import com.rapido.rapidodesignsystem.theme.RapidoLocalColors
 import com.rapido.rapidodesignsystem.tokens.base.RdsColors
 import me.kartdroid.androidkitchen2.R
-import me.kartdroid.androidkitchen2.subscription.models.SubscriptionV2
+import me.kartdroid.androidkitchen2.subscription.models.AvailableSubscription
 import me.kartdroid.androidkitchen2.subscription.v2.ui.preview.AvailableSubsPreviewProvider
 
 /**
@@ -48,40 +49,39 @@ import me.kartdroid.androidkitchen2.subscription.v2.ui.preview.AvailableSubsPrev
 
 @Composable
 fun AvailableSubscriptionCard(
-        modifier: Modifier = Modifier,
-        subscription: SubscriptionV2,
+    modifier: Modifier = Modifier,
+    subscription: AvailableSubscription,
 ) {
     val absoluteElevation = LocalAbsoluteElevation.current + 4.dp
     val shape = RoundedCornerShape(8.dp)
     Box(
-            modifier = modifier
-                    .shadow(elevation = absoluteElevation, shape = shape, clip = false)
-                    .background(color = MaterialTheme.colors.surface, shape = shape)
-                    .clip(shape)
-                    .fillMaxWidth(),
+        modifier = modifier
+            .shadow(elevation = absoluteElevation, shape = shape, clip = false)
+            .background(color = MaterialTheme.colors.surface, shape = shape)
+            .clip(shape)
+            .fillMaxWidth(),
     ) {
         RdsTextView(
-                modifier = Modifier
-                        .clip(RoundedCornerShape(bottomStart = 8.dp, topEnd = 8.dp))
-                        .background(color = Color(0xFF3804A5))
-                        .padding(horizontal = 12.dp, vertical = 5.dp)
-                        .align(Alignment.TopEnd),
-                text = stringResource(id = R.string.recommended),
-                type = RdsTextType.Custom(
-                        TextStyle(
-                                fontSize = 10.sp,
-                                lineHeight = 16.sp,
-                                fontFamily = FontFamily(Font(R.font.noto_sans_regular)),
-                                fontWeight = FontWeight(500),
-                                color = RdsColors.white,
-                                textAlign = TextAlign.Center
-                        )
-                ))
+            modifier = Modifier
+                .clip(RoundedCornerShape(bottomStart = 8.dp, topEnd = 8.dp))
+                .background(color = Color(0xFF3804A5))
+                .padding(horizontal = 12.dp, vertical = 5.dp)
+                .align(Alignment.TopEnd),
+            text = stringResource(id = R.string.recommended),
+            type = RdsTextType.Custom(
+                TextStyle(
+                    fontSize = 10.sp,
+                    lineHeight = 16.sp,
+                    fontFamily = FontFamily(Font(R.font.noto_sans_regular)),
+                    fontWeight = FontWeight(500),
+                    color = RdsColors.white,
+                    textAlign = TextAlign.Center
+                )
+            ))
         Column(
-                modifier = Modifier
-                        .padding(horizontal = 16.dp, vertical = 12.dp)
+            modifier = Modifier
+                .padding(horizontal = 16.dp, vertical = 12.dp)
         ) {
-
             SelectionAndLabelRow(subscription = subscription)
             Spacer(modifier = Modifier.height(8.dp))
             SubscriptionInfoRow(subscription = subscription)
@@ -90,16 +90,16 @@ fun AvailableSubscriptionCard(
 }
 
 @Composable
-fun SelectionAndLabelRow(subscription: SubscriptionV2) {
+fun SelectionAndLabelRow(subscription: AvailableSubscription) {
     Row(
-            verticalAlignment = Alignment.CenterVertically
+        verticalAlignment = Alignment.CenterVertically
     ) {
         RdsIcon(
-                config = RdsIconConfig(
-                        painter = painterResource(id = R.drawable.ic_unselected_plan),
-                        tintColor = Color(0xFF3804A5), //Color.Unspecified
-                        modifier = Modifier.size(18.dp)
-                ))
+            config = RdsIconConfig(
+                painter = painterResource(id = R.drawable.ic_unselected_plan),
+                tintColor = Color(0xFF3804A5), //Color.Unspecified
+                modifier = Modifier.size(18.dp)
+            ))
         /*RdsImage(
                 painter = rememberVectorPainter(image = Icons.Filled.CheckCircle),
                 modifier = Modifier.size(18.dp),
@@ -108,99 +108,16 @@ fun SelectionAndLabelRow(subscription: SubscriptionV2) {
                 )*/
         Spacer(modifier = Modifier.width(16.dp))
         RdsTextView(
-                text = subscription.title,
-                type = RdsTextType.Custom(
-                        TextStyle(
-                                fontSize = 14.sp,
-                                lineHeight = 20.sp,
-                                fontFamily = FontFamily(Font(R.font.noto_sans_regular)),
-                                fontWeight = FontWeight(700),
-                        )
-
-                ),
-        )
-    }
-}
-
-@Composable
-fun SubscriptionInfoRow(subscription: SubscriptionV2) {
-    Row(
-            modifier = Modifier.padding(start = 34.dp),
-            verticalAlignment = Alignment.CenterVertically,
-    ) {
-        with(subscription.eligibleConsumptionInfo) {
-            UnitAndTypeInfo(
-                    modifier = Modifier.weight(1f),
-                    unitLabel = unitsLabel,
-                    typeLabel = typeLabel,
-            )
-        }
-        Box(modifier = Modifier
-                .width(1.dp)
-                .fillMaxHeight()
-                .background(RdsColors.gray90)
-        )
-        with(subscription.durationInfo) {
-            UnitAndTypeInfo(
-                    modifier = Modifier
-                            .weight(1f)
-                            .padding(start = 12.dp),
-                    unitLabel = unitsLabel,
-                    typeLabel = typeLabel,
-            )
-        }
-        Box(modifier = Modifier
-                .width(1.dp)
-                .fillMaxHeight()
-                .background(RdsColors.gray90)
-        )
-        with(subscription.amountInfo) {
-            UnitAndTypeInfo(
-                    modifier = Modifier
-                            .weight(1f)
-                            .padding(start = 12.dp),
-                    strikeThroughTypeLabel = true,
-                    unitLabel = currentPrice,
-                    typeLabel = strikeOutPrice,
-            )
-        }
-    }
-}
-
-@Composable
-fun UnitAndTypeInfo(
-        modifier: Modifier = Modifier,
-        strikeThroughTypeLabel: Boolean = false,
-        unitLabel: String,
-        typeLabel: String,
-) {
-    Column(
-            modifier = modifier,
-            horizontalAlignment = Alignment.Start,
-    ) {
-        RdsTextView(
-                text = unitLabel,
-                type = RdsTextType.Custom(
-                        TextStyle(
-                                fontSize = 16.sp,
-                                lineHeight = 20.sp,
-                                fontFamily = FontFamily(Font(R.font.noto_sans_regular)),
-                                fontWeight = FontWeight(500),
-                        )
+            text = subscription.title,
+            type = RdsTextType.Custom(
+                TextStyle(
+                    fontSize = 14.sp,
+                    lineHeight = 20.sp,
+                    fontFamily = FontFamily(Font(R.font.noto_sans_regular)),
+                    fontWeight = FontWeight(700),
                 )
-        )
-        RdsTextView(
-                text = typeLabel,
-                type = RdsTextType.Custom(
-                        TextStyle(
-                                fontSize = 12.sp,
-                                lineHeight = 16.sp,
-                                fontFamily = FontFamily(Font(R.font.noto_sans_regular)),
-                                fontWeight = FontWeight(400),
-                                color = RdsColors.gray1000,
-                                textDecoration = if (strikeThroughTypeLabel) TextDecoration.LineThrough else TextDecoration.None
-                        )
-                )
+
+            ),
         )
     }
 }
@@ -208,14 +125,20 @@ fun UnitAndTypeInfo(
 
 @Preview
 @Composable
-fun AvailableSubscriptionCardPreview(@PreviewParameter(AvailableSubsPreviewProvider::class) subscription: SubscriptionV2) {
+fun AvailableSubscriptionCardPreview(@PreviewParameter(AvailableSubsPreviewProvider::class) subscription: AvailableSubscription) {
     Box(
-            modifier = Modifier
-                    .background(RdsColors.gray_50)
-                    .padding(24.dp)
-                    .height(100.dp)
+        modifier = Modifier
+            .background(RdsColors.gray_50)
+            .padding(24.dp)
+            .height(100.dp)
     ) {
-        AvailableSubscriptionCard(subscription = subscription)
+        CompositionLocalProvider(
+            RapidoLocalColors provides RapidoDefaultOrderColors.copy(
+                onSurfaceDimVariant = RdsColors.gray100,
+            )
+        ) {
+            AvailableSubscriptionCard(subscription = subscription)
+        }
     }
 
 }

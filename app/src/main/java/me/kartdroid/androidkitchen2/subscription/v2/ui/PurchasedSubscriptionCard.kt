@@ -10,10 +10,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.LocalAbsoluteElevation
-import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
@@ -39,6 +37,7 @@ import com.rapido.rapidodesignsystem.theme.RapidoLocalColors
 import com.rapido.rapidodesignsystem.theme.RapidoTheme
 import com.rapido.rapidodesignsystem.tokens.base.RdsColors
 import me.kartdroid.androidkitchen2.R
+import me.kartdroid.androidkitchen2.subscription.models.ActivatedSubscriptionV2
 import me.kartdroid.androidkitchen2.subscription.models.PurchaseProgressedSubscription
 import me.kartdroid.androidkitchen2.subscription.v2.ui.preview.PurchaseProgressedSubscriptionPreviewProvider
 
@@ -56,7 +55,7 @@ fun PurchasedSubscriptionCard(
     Box(
         modifier = modifier
             .shadow(elevation = absoluteElevation, shape = shape, clip = false)
-            .background(color = MaterialTheme.colors.surface, shape = shape)
+            .background(color = RapidoTheme.colors.surface, shape = shape)
             .fillMaxWidth(),
     ) {
         RdsRibbon(
@@ -69,18 +68,24 @@ fun PurchasedSubscriptionCard(
             fallbackDrawableRes = R.drawable.ic_check_circle_green,
         )
         Column {
-
             SubscriptionStatusSection(
                 subscription = subscription,
                 modifier = Modifier
                     .fillMaxWidth()
             )
             SubscriptionProgressBar()
-            SubscriptionProgressSection(
-                subscription = subscription,
-                modifier = Modifier
-                    .fillMaxWidth()
-            )
+            if (subscription is ActivatedSubscriptionV2) {
+                SubscriptionProgressSection(
+                    subscription = subscription,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                )
+            } else {
+                SubscriptionInfoRow(
+                    modifier = Modifier.background(RapidoTheme.colors.secondarySurface),
+                    subscription = subscription
+                )
+            }
         }
     }
 }
@@ -186,14 +191,14 @@ fun PurchasedSubscriptionCardPreview(@PreviewParameter(PurchaseProgressedSubscri
         modifier = Modifier
             .background(RdsColors.gray_50)
             .padding(24.dp)
-            .wrapContentHeight()
+            .height(152.dp)
     ) {
         CompositionLocalProvider(
             RapidoLocalColors provides RapidoDefaultOrderColors.copy(
                 secondaryContainer = RdsColors.green2,
                 onSecondaryContainer = RdsColors.white,
                 onSurfaceVariant = RdsColors.greenDark500,
-                onSurfaceDimVariant = RdsColors.green100,
+                onSurfaceDimVariant = RdsColors.green200,
                 secondarySurface = RdsColors.greenLight,
             )
         ) {

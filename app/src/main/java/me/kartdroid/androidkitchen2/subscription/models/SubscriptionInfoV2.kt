@@ -8,14 +8,22 @@ import kotlinx.serialization.Serializable
  * @since 26/04/24
  */
 
-data class SubscriptionV2(
-        val title: String,
+
+interface SubscriptionV2 {
+    val title: String
+    val ruleType: RuleType
+    val eligibleConsumptionInfo: EligibleConsumptionInfo
+    val durationInfo: DurationInfo
+    val amountInfo: AmountInfo
+}
+data class AvailableSubscription(
+        override val title: String,
         val isRecommended: Boolean,
-        val ruleType: RuleType,
-        val eligibleConsumptionInfo: EligibleConsumptionInfo,
-        val durationInfo: DurationInfo,
-        val amountInfo: AmountInfo,
-)
+        override val ruleType: RuleType,
+        override val eligibleConsumptionInfo: EligibleConsumptionInfo,
+        override val durationInfo: DurationInfo,
+        override val amountInfo: AmountInfo,
+): SubscriptionV2
 
 
 data class EligibleConsumptionInfo(
@@ -33,12 +41,7 @@ data class AmountInfo(
         val strikeOutPrice: String,
 )
 
-sealed interface PurchaseProgressedSubscription {
-    val title: String
-    val ruleType: RuleType
-    val eligibleConsumptionInfo: EligibleConsumptionInfo
-    val durationInfo: DurationInfo
-    val amountInfo: AmountInfo
+sealed interface PurchaseProgressedSubscription: SubscriptionV2 {
     val validityTag: SubscriptionInfo.ValidityTag
     val purchaseProgressInfo: PurchaseProgressInfo
 }
