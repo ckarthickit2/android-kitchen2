@@ -101,7 +101,7 @@ fun SubscriptionScreenInfo(
                 }
             if (subscriptionInfo.tncInfo.isNotEmpty()) {
                 item {
-                    TnCTitle()
+                    TnCTitle(modifier = Modifier.padding(horizontal = 24.dp))
                 }
             }
             items(subscriptionInfo.tncInfo) { info ->

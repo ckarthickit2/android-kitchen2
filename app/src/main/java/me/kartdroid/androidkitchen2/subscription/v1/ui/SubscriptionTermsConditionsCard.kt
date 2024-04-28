@@ -25,8 +25,11 @@ import me.kartdroid.androidkitchen2.R
  */
 
 @Composable
-fun TnCTitle() {
+fun TnCTitle(
+    modifier: Modifier = Modifier
+) {
     RdsTextView(
+        modifier = modifier,
         text = stringResource(id = R.string.tnc),
         style = RdsTextType.LabelSmall.typography.copy(
             color = RdsColors.dark2,
@@ -34,13 +37,12 @@ fun TnCTitle() {
             fontSize = 14.sp,
             lineHeight = 16.sp
         ),
-        modifier = Modifier.padding(start = 24.dp, top = 42.dp, end = 24.dp)
     )
 }
 
 @Composable
 fun TnCInfo(item: String, modifier: Modifier = Modifier) {
-    Row(modifier = modifier.padding(start = 24.dp, top = 8.dp, end = 24.dp)) {
+    Row(modifier = modifier) {
         RdsTextView(text = "\u2022", type = RdsTextType.BodySmall, modifier = Modifier.padding(start = 8.dp))
         RdsTextView(
             text = item,
@@ -64,11 +66,11 @@ fun PreviewSubscriptionTermsConditionsCard() {
     RapidoTheme {
         Column(
             modifier = Modifier
-                .padding(horizontal = 24.dp, vertical = 42.dp)
+                .padding(top = 16.dp)
                 .fillMaxWidth()
                 .wrapContentHeight(),
         ) {
-            TnCTitle()
+            TnCTitle(modifier = Modifier.padding(horizontal = 24.dp))
             val tnCTexts = listOf(
                 "GST will be charged on plan purchases",
                 "No refunds will be given once plan is purchased",
@@ -78,7 +80,10 @@ fun PreviewSubscriptionTermsConditionsCard() {
             )
             Column(modifier = Modifier) {
                 tnCTexts.forEach { item ->
-                    TnCInfo(item)
+                    TnCInfo(
+                        modifier = Modifier.padding(start = 24.dp, top = 8.dp, end = 24.dp),
+                        item = item
+                    )
                 }
             }
         }

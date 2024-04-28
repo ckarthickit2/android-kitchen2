@@ -3,15 +3,16 @@ package me.kartdroid.androidkitchen2.subscription.v2.ui
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ExperimentalMaterialApi
@@ -30,6 +31,7 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.rapido.presentation.model.IFaqContext
@@ -47,9 +49,12 @@ import com.rapido.rapidodesignsystem.theme.RapidoDefaultOrderColors
 import com.rapido.rapidodesignsystem.theme.RapidoLocalColors
 import com.rapido.rapidodesignsystem.theme.RapidoTheme
 import com.rapido.rapidodesignsystem.tokens.base.RdsColors
+import com.rapido.rider.subscriptions.presentation.ui.composables.TnCInfo
+import com.rapido.rider.subscriptions.presentation.ui.composables.TnCTitle
 import me.kartdroid.androidkitchen2.R
 import me.kartdroid.androidkitchen2.subscription.v2.ui.preview.AvailableSubsPreviewProvider
 import me.kartdroid.androidkitchen2.subscription.v2.ui.preview.PurchaseProgressedSubscriptionPreviewProvider
+import me.kartdroid.androidkitchen2.subscription.v2.ui.preview.previewTnCInfo
 import me.kartdroid.androidkitchen2.utils.toFormattedString
 
 /**
@@ -106,11 +111,12 @@ fun SubscriptionScreenV2() {
             )
         },
         content = {
-            Column(
+            Box(
                 modifier = Modifier
                     .background(RdsColors.gray50)
                     .padding(it)
             ) {
+                //Banner
                 RdsImage(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -118,7 +124,7 @@ fun SubscriptionScreenV2() {
                     painter = painterResource(id = R.drawable.pay_o_banner),
                     contentDescription = null,
                 )
-                SubscriptionContent()
+                SubscriptionContent(bannerHeight = 156.dp)
             }
         },
         footer = {
@@ -142,13 +148,25 @@ fun SubscriptionScreenV2() {
 @Composable
 fun SubscriptionContent(
     modifier: Modifier = Modifier,
+    bannerHeight: Dp
 ) {
-    Column(
+    LazyColumn(
         modifier = modifier
-            .offset(y = (-30).dp)
+            .fillMaxHeight()
+            .padding(top = bannerHeight.times(0.85f))
     ) {
-        SubscriptionsPurchasedSection()
-        SubscriptionsAvailableSection()
+        //Current + Upcoming Plan Cards
+        item {
+            SubscriptionsPurchasedSection()
+        }
+        //Next Plan
+        subscriptionsAvailableSection(
+            itemModifier = Modifier.padding(horizontal = 24.dp, vertical = 8.dp)
+        )
+        //TNC Section
+        item {
+            TNCSection(tncInfo = previewTnCInfo)
+        }
     }
 }
 
@@ -202,37 +220,53 @@ fun SubscriptionsPurchasedSection(
     }
 }
 
-@Composable
-fun SubscriptionsAvailableSection(
-    modifier: Modifier = Modifier
+
+fun LazyListScope.subscriptionsAvailableSection(
+    itemModifier: Modifier
 ) {
-    Column(
-        modifier = modifier
-            .fillMaxSize()
-            .background(RdsColors.gray50)
-            .padding(top = 12.dp, start = 24.dp, end = 24.dp),
-    ) {
+    item {
+        RdsTextView(
+            modifier = itemModifier,
+            text = "Select your next Plan",
+            type = RdsTextType.Custom(
+                textStyle = TextStyle(
+                    fontSize = 13.sp,
+                    lineHeight = 24.sp,
+                    fontWeight = FontWeight.ExtraBold,
+                )
+            )
+        )
+    }
+    itemsIndexed(AvailableSubsPreviewProvider().values.toList()) { index, subscription ->
         CompositionLocalProvider(
             RapidoLocalColors provides RapidoDefaultOrderColors.copy(
                 onSurfaceDimVariant = RdsColors.gray200,
             )
         ) {
-            SubscriptionSection(
-                modifier = Modifier,
-                sectionTitle = "Select your next Plan"
-            ) {
-                LazyColumn(
-                    modifier = Modifier.padding(top = 8.dp),
-                    verticalArrangement = Arrangement.spacedBy(16.dp)
-                ) {
-                    itemsIndexed(AvailableSubsPreviewProvider().values.toList()) { index, subscription ->
-                        AvailableSubscriptionCard(
-                            subscription = subscription,
-                            modifier = Modifier.padding(top = if (index==0) 0.dp else 12.dp)
-                        )
-                    }
-                }
-            }
+            AvailableSubscriptionCard(
+                modifier = itemModifier,
+                subscription = subscription,
+            )
+        }
+    }
+}
+
+
+@Composable
+fun TNCSection(
+    tncInfo: List<String>
+) {
+    Column(
+        modifier = Modifier
+            .padding(horizontal = 24.dp)
+            .padding(top = 16.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        TnCTitle()
+        tncInfo.forEach { info ->
+            TnCInfo(
+                item = info,
+            )
         }
     }
 }
@@ -285,7 +319,7 @@ fun CommissionSavedContent(
 
 
 @Composable
-fun SubscriptionSection(
+inline fun SubscriptionSection(
     modifier: Modifier = Modifier,
     sectionTitle: String,
     content: @Composable () -> Unit
@@ -305,7 +339,7 @@ fun SubscriptionSection(
     }
 }
 
-@Preview(heightDp = 1400)
+@Preview(heightDp = 1250)
 @Composable
 fun SubscriptionScreenV2Preview() {
     RapidoTheme {

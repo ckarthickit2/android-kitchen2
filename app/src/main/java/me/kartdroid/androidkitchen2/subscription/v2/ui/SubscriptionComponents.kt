@@ -1,6 +1,7 @@
 package me.kartdroid.androidkitchen2.subscription.v2.ui
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -83,6 +84,7 @@ fun SubscriptionInfoRow(
                     .weight(1f)
                     .padding(start = 12.dp),
                 strikeThroughTypeLabel = true,
+                verticalArrangement = Arrangement.Center,
                 unitLabel = currentPrice,
                 typeLabel = strikeOutPrice,
                 unitLabelStyle = RdsTextType.LabelLarge.typography.copy(
@@ -98,6 +100,7 @@ fun UnitAndTypeInfo(
     modifier: Modifier = Modifier,
     strikeThroughTypeLabel: Boolean = false,
     horizontalAlignment: Alignment.Horizontal = Alignment.Start,
+    verticalArrangement: Arrangement.Vertical = Arrangement.Top,
     unitLabelStyle: TextStyle = RdsTextType.LabelSmall.typography.copy(
         fontSize = 16.sp,
         letterSpacing = TextUnit.Unspecified,
@@ -108,19 +111,22 @@ fun UnitAndTypeInfo(
     Column(
         modifier = modifier,
         horizontalAlignment = horizontalAlignment,
+        verticalArrangement = verticalArrangement
     ) {
         RdsTextView(
             text = unitLabel,
             style = unitLabelStyle,
         )
-        RdsTextView(
-            text = typeLabel,
-            style = RdsTextType.BodySmall.typography.copy(
-                lineHeight = 20.sp,
-                color = RdsColors.gray1000,
-                textDecoration = if (strikeThroughTypeLabel) TextDecoration.LineThrough else TextDecoration.None
+        if (typeLabel.isNotBlank()) {
+            RdsTextView(
+                text = typeLabel,
+                style = RdsTextType.BodySmall.typography.copy(
+                    lineHeight = 20.sp,
+                    color = RdsColors.gray1000,
+                    textDecoration = if (strikeThroughTypeLabel) TextDecoration.LineThrough else TextDecoration.None
+                )
             )
-        )
+        }
     }
 }
 
