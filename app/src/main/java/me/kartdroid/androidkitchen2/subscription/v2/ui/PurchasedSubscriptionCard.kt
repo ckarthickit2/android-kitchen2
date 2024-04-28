@@ -83,7 +83,9 @@ fun PurchasedSubscriptionCard(
                 )
             } else {
                 SubscriptionInfoRow(
-                    modifier = Modifier.background(RapidoTheme.colors.secondarySurface),
+                    modifier = Modifier
+                        .background(RapidoTheme.colors.secondarySurface)
+                        .padding(start = 34.dp),
                     subscription = subscription
                 )
             }

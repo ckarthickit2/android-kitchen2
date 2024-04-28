@@ -82,7 +82,10 @@ fun AvailableSubscriptionCard(
         ) {
             SelectionAndLabelRow(subscription = subscription)
             Spacer(modifier = Modifier.height(8.dp))
-            SubscriptionInfoRow(subscription = subscription)
+            SubscriptionInfoRow(
+                modifier = Modifier.padding(start = 34.dp),
+                subscription = subscription
+            )
         }
     }
 }
