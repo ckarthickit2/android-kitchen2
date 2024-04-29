@@ -14,6 +14,7 @@ import me.kartdroid.androidkitchen2.subscription.models.RuleType
 class AvailableSubsPreviewProvider : PreviewParameterProvider<AvailableSubscription> {
     override val values: Sequence<AvailableSubscription> = sequenceOf(
         AvailableSubscription(
+            subscriptionId = "1",
             title = "Weekly Pass",
             isRecommended = false,
             ruleType = RuleType.ZERO_COMMISSION,
@@ -32,6 +33,7 @@ class AvailableSubsPreviewProvider : PreviewParameterProvider<AvailableSubscript
             )
         ),
         AvailableSubscription(
+            subscriptionId = "2",
             title = "Monthly Pass",
             isRecommended = true,
             ruleType = RuleType.VARIABLE_COMMISSION,

@@ -21,6 +21,7 @@ import me.kartdroid.androidkitchen2.subscription.models.ValidityTagInfo
 class SubscriptionInfoRowPreviewProvider : PreviewParameterProvider<Pair<PurchasedSubscriptionV2, RapidoThemeColors>> {
     override val values: Sequence<Pair<PurchasedSubscriptionV2, RapidoThemeColors>> = sequenceOf(
         PurchasedSubscriptionV2(
+            subscriptionId = "weekend_saver_1",
             title = "Weekend Saver",
             ruleType = RuleType.VARIABLE_COMMISSION,
             eligibleConsumptionInfo = EligibleConsumptionInfo(
@@ -46,6 +47,7 @@ class SubscriptionInfoRowPreviewProvider : PreviewParameterProvider<Pair<Purchas
             ),
         ) to blueTheme,
         PurchasedSubscriptionV2(
+            subscriptionId = "weekend_saver_2",
             title = "Weekend Saver",
             ruleType = RuleType.VARIABLE_COMMISSION,
             eligibleConsumptionInfo = EligibleConsumptionInfo(
@@ -71,6 +73,7 @@ class SubscriptionInfoRowPreviewProvider : PreviewParameterProvider<Pair<Purchas
             ),
         ) to blueTheme,
         PurchasedSubscriptionV2(
+            subscriptionId = "weekend_saver_3",
             title = "Weekend Saver",
             ruleType = RuleType.VARIABLE_COMMISSION,
             eligibleConsumptionInfo = EligibleConsumptionInfo(

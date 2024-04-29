@@ -50,6 +50,7 @@ import me.kartdroid.androidkitchen2.subscription.v2.ui.preview.AvailableSubsPrev
 fun AvailableSubscriptionCard(
     modifier: Modifier = Modifier,
     subscription: AvailableSubscription,
+    isSelected: Boolean = false,
 ) {
     val absoluteElevation = LocalAbsoluteElevation.current + 4.dp
     val shape = RoundedCornerShape(8.dp)
@@ -66,6 +67,7 @@ fun AvailableSubscriptionCard(
                 .background(color = Color(0xFF3804A5))
                 .padding(horizontal = 12.dp, vertical = 5.dp)
                 .align(Alignment.TopEnd),
+            //TODO: Add Translation
             text = stringResource(id = R.string.recommended),
             type = RdsTextType.Custom(
                 TextStyle(
@@ -75,12 +77,13 @@ fun AvailableSubscriptionCard(
                     color = RdsColors.white,
                     textAlign = TextAlign.Center
                 )
-            ))
+            )
+        )
         Column(
             modifier = Modifier
                 .padding(horizontal = 16.dp, vertical = 12.dp)
         ) {
-            SelectionAndLabelRow(subscription = subscription)
+            SelectionAndLabelRow(subscription = subscription, isSelected = isSelected)
             Spacer(modifier = Modifier.height(8.dp))
             SubscriptionInfoRow(
                 modifier = Modifier.padding(start = 34.dp),
@@ -91,16 +94,26 @@ fun AvailableSubscriptionCard(
 }
 
 @Composable
-fun SelectionAndLabelRow(subscription: AvailableSubscription) {
+fun SelectionAndLabelRow(
+    subscription: AvailableSubscription,
+    isSelected: Boolean
+) {
     Row(
         verticalAlignment = Alignment.CenterVertically
     ) {
+        val iconPainter = if (isSelected) {
+            painterResource(id = R.drawable.ic_radio_selected)
+        } else {
+            painterResource(id = R.drawable.ic_radio_unselected)
+        }
         RdsIcon(
             config = RdsIconConfig(
-                painter = painterResource(id = R.drawable.ic_unselected_plan),
-                tintColor = Color(0xFF3804A5), //Color.Unspecified
-                modifier = Modifier.size(18.dp)
-            ))
+                modifier = Modifier.size(18.dp),
+                painter = iconPainter,
+                tintColor = Color.Unspecified
+
+            )
+        )
         /*RdsImage(
                 painter = rememberVectorPainter(image = Icons.Filled.CheckCircle),
                 modifier = Modifier.size(18.dp),
@@ -133,7 +146,7 @@ fun AvailableSubscriptionCardPreview(@PreviewParameter(AvailableSubsPreviewProvi
                     onSurfaceDimVariant = RdsColors.gray100,
                 )
             ) {
-                AvailableSubscriptionCard(subscription = subscription)
+                AvailableSubscriptionCard(subscription = subscription, isSelected = true)
             }
         }
     }

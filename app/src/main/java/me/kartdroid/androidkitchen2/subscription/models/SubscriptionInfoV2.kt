@@ -9,7 +9,32 @@ import kotlinx.serialization.Serializable
  */
 
 
+data class SubscriptionInfoV2(
+    val toolbarTitle: String,
+    val bannerInfo: SubscriptionInfo.BannerInfo,
+    val lifetimeCommissionSavedInfo: LifetimeCommissionSavedInfo,
+    val currentSubscription: PurchaseProgressedSubscription?, //Payment complete, processing (or) Failed
+    val upcomingSubscriptions: List<PurchaseProgressedSubscription>, //Payment Complete, Processing or Failed
+    val availableSubscriptions: List<AvailableSubscription>,
+    val tncInfo: List<String>,
+    val extraInfo: SubscriptionInfo.ExtraInfo,
+    val footerCTAInfo: FooterCTAInfo,
+    val selectedSubscriptionID: String? = null,
+)
+
+data class LifetimeCommissionSavedInfo(
+    val commissionSavedLabel: String,
+    val commissionLifetimeLabel: String,
+)
+
+data class FooterCTAInfo(
+    val calloutsHtmlText: String,
+    val ctaLabel: String,
+    val ctaDeepLink: String,
+)
+
 interface SubscriptionV2 {
+    val subscriptionId: String
     val title: String
     val ruleType: RuleType
     val eligibleConsumptionInfo: EligibleConsumptionInfo
@@ -18,6 +43,7 @@ interface SubscriptionV2 {
 }
 
 data class AvailableSubscription(
+    override val subscriptionId: String,
     override val title: String,
     val isRecommended: Boolean,
     override val ruleType: RuleType,
@@ -54,6 +80,7 @@ data class ValidityTagInfo(
 )
 
 data class PurchasedSubscriptionV2(
+    override val subscriptionId: String,
     override val title: String,
     override val ruleType: RuleType,
     override val eligibleConsumptionInfo: EligibleConsumptionInfo,
@@ -64,6 +91,7 @@ data class PurchasedSubscriptionV2(
 ) : PurchaseProgressedSubscription
 
 data class ActivatedSubscriptionV2(
+    override val subscriptionId: String,
     override val title: String,
     override val ruleType: RuleType,
     override val eligibleConsumptionInfo: EligibleConsumptionInfo,

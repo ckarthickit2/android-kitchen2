@@ -23,6 +23,7 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
@@ -31,9 +32,13 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil.compose.rememberAsyncImagePainter
+import coil.request.ImageRequest
+import coil.size.Size
 import com.rapido.presentation.model.IFaqContext
 import com.rapido.rapidodesignsystem.components.bottombar.CtaInfo
 import com.rapido.rapidodesignsystem.components.bottombar.RDSFooterCTA
@@ -52,8 +57,10 @@ import com.rapido.rapidodesignsystem.tokens.base.RdsColors
 import com.rapido.rider.subscriptions.presentation.ui.composables.TnCInfo
 import com.rapido.rider.subscriptions.presentation.ui.composables.TnCTitle
 import me.kartdroid.androidkitchen2.R
-import me.kartdroid.androidkitchen2.subscription.v2.ui.preview.AvailableSubsPreviewProvider
-import me.kartdroid.androidkitchen2.subscription.v2.ui.preview.PurchaseProgressedSubscriptionPreviewProvider
+import me.kartdroid.androidkitchen2.subscription.models.AvailableSubscription
+import me.kartdroid.androidkitchen2.subscription.models.LifetimeCommissionSavedInfo
+import me.kartdroid.androidkitchen2.subscription.models.SubscriptionInfoV2
+import me.kartdroid.androidkitchen2.subscription.v2.ui.preview.SubsScreenPreviewParameterProvider
 import me.kartdroid.androidkitchen2.subscription.v2.ui.preview.previewTnCInfo
 import me.kartdroid.androidkitchen2.utils.toFormattedString
 
@@ -63,7 +70,9 @@ import me.kartdroid.androidkitchen2.utils.toFormattedString
  */
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun SubscriptionScreenV2() {
+fun SubscriptionScreenV2(
+    subsInfo: SubscriptionInfoV2
+) {
     val bottomSheetState = rememberModalBottomSheetState(
         initialValue = ModalBottomSheetValue.Hidden
     )
@@ -77,7 +86,10 @@ fun SubscriptionScreenV2() {
             RdsGenericBottomSheet(
                 title = String.format("Continue to buy ₹${purchasePrice} Recharge Plan"),
                 description = null,
-                primaryButtonText = stringResource(id = R.string.proceed_to_pay_rs_x, purchasePrice),
+                primaryButtonText = stringResource(
+                    id = R.string.proceed_to_pay_rs_x,
+                    purchasePrice
+                ),
                 onClickPrimaryButton = {
 
                 },
@@ -94,14 +106,14 @@ fun SubscriptionScreenV2() {
             TopAppBarWithSubtitle(
                 modifier = Modifier,
                 actionIcon = R.drawable.ic_keyboard_back,
-                toolbarText = stringResource(id = R.string.recharge_txt),
+                toolbarText = subsInfo.toolbarTitle,
                 actionOnClick = { },
                 trailingContent = {
                     HelpToolbarButton(
                         modifier = Modifier,
                         IFaqContext.FaqContext(
-                            "recharge",
-                            "Recharge"
+                            subsInfo.extraInfo.helpInfo.context,
+                            subsInfo.extraInfo.helpInfo.title,
                         ),
                         onHelpClicked = { },
                         text = stringResource(id = R.string.help)
@@ -117,30 +129,39 @@ fun SubscriptionScreenV2() {
                     .padding(it)
             ) {
                 //Banner
+                val painter = rememberAsyncImagePainter(
+                    model = ImageRequest.Builder(LocalContext.current)
+                        .data(subsInfo.bannerInfo.bannerImageUrl)
+                        .size(Size.ORIGINAL)
+                        .placeholder(R.drawable.pay_o_banner)
+                        .build()
+                )
                 RdsImage(
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(156.dp),
-                    painter = painterResource(id = R.drawable.pay_o_banner),
+                    painter = painter,
                     contentDescription = null,
                 )
-                SubscriptionContent(bannerHeight = 156.dp)
+                SubscriptionContent(bannerHeight = 156.dp, subsInfo = subsInfo)
             }
         },
         footer = {
-            RDSFooterCTA(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .shadow(elevation = 40.dp)
-                    .border(width = 1.dp, color = RdsColors.gray200)
-                    .background(color = RdsColors.white),
-                showCalloutsIcon = false,
-                calloutsHTML = "<html>Pay <b>₹199 + ₹152</b> (18% GST)</html>",
-                ctaInfo = CtaInfo(
-                    text = "Subscribe",
-                    deepLink = "https://www.google.com"
+            if(subsInfo.selectedSubscriptionID.isNullOrBlank().not()) {
+                RDSFooterCTA(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .shadow(elevation = 40.dp)
+                        .border(width = 1.dp, color = RdsColors.gray200)
+                        .background(color = RdsColors.white),
+                    showCalloutsIcon = false,
+                    calloutsHTML = subsInfo.footerCTAInfo.calloutsHtmlText,
+                    ctaInfo = CtaInfo(
+                        text = subsInfo.footerCTAInfo.ctaLabel,
+                        deepLink = subsInfo.footerCTAInfo.ctaDeepLink,
+                    )
                 )
-            )
+            }
         }
     )
 }
@@ -148,7 +169,8 @@ fun SubscriptionScreenV2() {
 @Composable
 fun SubscriptionContent(
     modifier: Modifier = Modifier,
-    bannerHeight: Dp
+    bannerHeight: Dp,
+    subsInfo: SubscriptionInfoV2,
 ) {
     LazyColumn(
         modifier = modifier
@@ -157,12 +179,18 @@ fun SubscriptionContent(
     ) {
         //Current + Upcoming Plan Cards
         item {
-            SubscriptionsPurchasedSection()
+            SubscriptionsPurchasedSection(subsInfo = subsInfo)
         }
-        //Next Plan
-        subscriptionsAvailableSection(
-            itemModifier = Modifier.padding(horizontal = 24.dp, vertical = 8.dp)
-        )
+
+        //Available Plans
+        if (subsInfo.availableSubscriptions.isNotEmpty()) {
+            subscriptionsAvailableSection(
+                itemModifier = Modifier.padding(horizontal = 24.dp, vertical = 8.dp),
+                availableSubscriptions = subsInfo.availableSubscriptions,
+                selectedSubscriptionID = subsInfo.selectedSubscriptionID,
+            )
+        }
+
         //TNC Section
         item {
             TNCSection(tncInfo = previewTnCInfo)
@@ -173,6 +201,7 @@ fun SubscriptionContent(
 @Composable
 fun SubscriptionsPurchasedSection(
     modifier: Modifier = Modifier,
+    subsInfo: SubscriptionInfoV2,
 ) {
     Column(
         modifier = modifier
@@ -180,54 +209,69 @@ fun SubscriptionsPurchasedSection(
             .padding(24.dp),
         verticalArrangement = Arrangement.spacedBy(24.dp, Alignment.CenterVertically),
     ) {
-        CommissionSavedContent(
-            modifier = Modifier
-                .fillMaxWidth()
-        )
-
-        // Active (or) Expired Plan
-        val (subscription, theme) = PurchaseProgressedSubscriptionPreviewProvider().values.toList()[0]
-        CompositionLocalProvider(
-            RapidoLocalColors provides theme
-        ) {
-
-            SubscriptionSection(
-                sectionTitle = "Current Plan",
-            ) {
-                PurchasedSubscriptionCard(
-                    modifier = Modifier.padding(top = 8.dp),
-                    subscription = subscription
-                )
-            }
-
+        if (subsInfo.lifetimeCommissionSavedInfo.commissionSavedLabel.isNotBlank()) {
+            CommissionSavedContent(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                lifetimeCommissionSavedInfo = subsInfo.lifetimeCommissionSavedInfo,
+            )
         }
 
+        // Active (or) Expired Plan
+        val currentSubscription = subsInfo.currentSubscription
+        if (currentSubscription != null) {
+            val theme = currentSubscription.theme()
+            CompositionLocalProvider(
+                RapidoLocalColors provides theme
+            ) {
+
+                SubscriptionSection(
+                    sectionTitle = "Current Plan",
+                ) {
+                    PurchasedSubscriptionCard(
+                        modifier = Modifier.padding(top = 8.dp),
+                        subscription = currentSubscription
+                    )
+                }
+
+            }
+        }
 
         // Future Plan
-        val (subscription2, theme2) = PurchaseProgressedSubscriptionPreviewProvider().values.toList()[3]
-        CompositionLocalProvider(
-            RapidoLocalColors provides theme2
-        ) {
+        val upcomingSubs = subsInfo.upcomingSubscriptions
+        if (upcomingSubs.isNotEmpty()) {
             SubscriptionSection(
                 sectionTitle = "Upcoming Plan",
             ) {
-                PurchasedSubscriptionCard(
-                    modifier = Modifier.padding(top = 8.dp),
-                    subscription = subscription2
-                )
+                upcomingSubs.forEach { upcomingSub ->
+                    val theme = upcomingSub.theme()
+                    CompositionLocalProvider(
+                        RapidoLocalColors provides theme
+                    ) {
+                        PurchasedSubscriptionCard(
+                            modifier = Modifier.padding(top = 8.dp),
+                            subscription = upcomingSub
+                        )
+                    }
+                }
             }
+
+
         }
     }
 }
 
 
 fun LazyListScope.subscriptionsAvailableSection(
-    itemModifier: Modifier
+    itemModifier: Modifier,
+    availableSubscriptions: List<AvailableSubscription>,
+    selectedSubscriptionID: String?,
 ) {
     item {
         RdsTextView(
             modifier = itemModifier,
-            text = "Select your next Plan",
+            //TODO: Add Localisation
+            text = stringResource(R.string.select_your_next_plan),
             type = RdsTextType.Custom(
                 textStyle = TextStyle(
                     fontSize = 13.sp,
@@ -237,7 +281,12 @@ fun LazyListScope.subscriptionsAvailableSection(
             )
         )
     }
-    itemsIndexed(AvailableSubsPreviewProvider().values.toList()) { index, subscription ->
+    itemsIndexed(
+        availableSubscriptions,
+        key = { _, item ->
+            item.subscriptionId
+        }
+    ) { _, subscription ->
         CompositionLocalProvider(
             RapidoLocalColors provides RapidoDefaultOrderColors.copy(
                 onSurfaceDimVariant = RdsColors.gray200,
@@ -246,6 +295,7 @@ fun LazyListScope.subscriptionsAvailableSection(
             AvailableSubscriptionCard(
                 modifier = itemModifier,
                 subscription = subscription,
+                isSelected = selectedSubscriptionID == subscription.subscriptionId
             )
         }
     }
@@ -274,7 +324,8 @@ fun TNCSection(
 
 @Composable
 fun CommissionSavedContent(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    lifetimeCommissionSavedInfo: LifetimeCommissionSavedInfo,
 ) {
     Row(modifier = modifier) {
         Column(
@@ -284,11 +335,12 @@ fun CommissionSavedContent(
             RdsTextView(
                 text = buildAnnotatedString {
                     withStyle(RdsTextType.DisplayMedium.typography.toSpanStyle()) {
-                        append("₹34")
+                        append(lifetimeCommissionSavedInfo.commissionSavedLabel)
                     }
                     append(" ")
                     withStyle(SpanStyle(color = RdsColors.gray900)) {
-                        append("Commission Saved")
+                        //TODO: Add Localisations
+                        append(stringResource(R.string.commission_saved))
                     }
 
                 },
@@ -297,7 +349,7 @@ fun CommissionSavedContent(
                 )
             )
             RdsHtmlText(
-                text = "<html>In last <b>1</b> month</html>",
+                text = lifetimeCommissionSavedInfo.commissionLifetimeLabel,
                 textType = RdsTextType.Custom(
                     textStyle = TextStyle(
                         fontSize = 14.sp,
@@ -341,8 +393,8 @@ inline fun SubscriptionSection(
 
 @Preview(heightDp = 1250)
 @Composable
-fun SubscriptionScreenV2Preview() {
+fun SubscriptionScreenV2Preview(@PreviewParameter(SubsScreenPreviewParameterProvider::class) subsInfo: SubscriptionInfoV2) {
     RapidoTheme {
-        SubscriptionScreenV2()
+        SubscriptionScreenV2(subsInfo = subsInfo)
     }
 }

@@ -54,4 +54,6 @@
     <string name="something_went_wrong">Something went wrong!!</string>
     <string name="an_error_occurred_try_again_later">An error occurred while checking. Please try again later</string>
     <string name="try_again">Try Again</string>
+    <string name="commission_saved">Commission Saved</string>
+    <string name="select_your_next_plan">Select your next Plan</string>
 </resources>

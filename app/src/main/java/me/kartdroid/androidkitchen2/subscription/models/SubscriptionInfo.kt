@@ -3,15 +3,15 @@ package me.kartdroid.androidkitchen2.subscription.models
 import java.math.BigDecimal
 
 data class SubscriptionInfo(
-        val toolbarTitle: String,
-        val bannerInfo: BannerInfo,
-        val activeSubscriptions: SubscriptionDetails,
-        val purchasedSubscriptions: SubscriptionDetails,
-        val availableSubscriptions: SubscriptionDetails,
-        val tncInfo: List<String>,
-        val extraInfo: ExtraInfo,
-        val ctaText: String,
-        val bottomSheetTitle: String
+    val toolbarTitle: String,
+    val bannerInfo: BannerInfo,
+    val activeSubscriptions: SubscriptionDetails,
+    val purchasedSubscriptions: SubscriptionDetails,
+    val availableSubscriptions: SubscriptionDetails,
+    val tncInfo: List<String>,
+    val extraInfo: ExtraInfo,
+    val ctaText: String,
+    val bottomSheetTitle: String
 ) {
     data class BannerInfo(
         val bannerImageUrl: String,
@@ -25,19 +25,19 @@ data class SubscriptionInfo(
     )
 
     data class Subscription(
-            val subscriptionId: String,
-            val title: String,
-            val description: String,
-            val validityInfoDescription: String,
-            val validityTag: ValidityTag,
-            val actualPrice: Double,
-            val amountAfterDiscount: Double,
-            val purchasePrice: BigDecimal,
-            val planType: String,
-            val ruleType: String,
-            val discountType: String,
-            val discountValue: Double,
-            val passPurchaseDescription: String = ""
+        val subscriptionId: String,
+        val title: String,
+        val description: String,
+        val validityInfoDescription: String,
+        val validityTag: ValidityTag,
+        val actualPrice: Double,
+        val amountAfterDiscount: Double,
+        val purchasePrice: BigDecimal,
+        val planType: String,
+        val ruleType: String,
+        val discountType: String,
+        val discountValue: Double,
+        val passPurchaseDescription: String = ""
     ) {
         companion object {
             const val RULE_TYPE_ZERO_COMMISSION = "zeroCommission"
@@ -62,7 +62,8 @@ data class SubscriptionInfo(
 
     data class ExtraInfo(
         val gstPercentage: Float,
-        val helpInfo: HelpInfo
+        val helpInfo: HelpInfo,
+        val confirmationPopupTitle: String,
     )
 
     data class HelpInfo(
@@ -85,10 +86,11 @@ data class SubscriptionInfo(
 
 
 data class PurchasedSubscriptionInfo(
-        val subscription: SubscriptionInfo.Subscription,
-        val successMessage: String
+    val subscription: SubscriptionInfo.Subscription,
+    val successMessage: String
 ) {
     companion object {
-        val EMPTY_PURCHASED_SUBSCRIPTION_INFO = PurchasedSubscriptionInfo(SubscriptionInfo.Subscription.EMPTY_SUBSCRIPTION, "")
+        val EMPTY_PURCHASED_SUBSCRIPTION_INFO =
+            PurchasedSubscriptionInfo(SubscriptionInfo.Subscription.EMPTY_SUBSCRIPTION, "")
     }
 }

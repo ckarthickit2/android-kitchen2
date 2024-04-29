@@ -130,7 +130,8 @@ fun PreviewRdsGenericButton() {
                 helpInfo = SubscriptionInfo.HelpInfo(
                     title = "Recharge",
                     context = "recharge"
-                )
+                ),
+                confirmationPopupTitle = "",
             ),
             onBuyClick = {},
             ctaText = "Recharge"

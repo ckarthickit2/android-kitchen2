@@ -26,6 +26,7 @@ import me.kartdroid.androidkitchen2.subscription.models.ValidityTagInfo
 class PurchaseProgressedSubscriptionPreviewProvider : PreviewParameterProvider<Pair<PurchaseProgressedSubscription, RapidoThemeColors>> {
     override val values: Sequence<Pair<PurchaseProgressedSubscription, RapidoThemeColors>> = sequenceOf(
         ActivatedSubscriptionV2(
+            subscriptionId = "ramzaan_1",
             title = "Ramzaan Special",
             ruleType = RuleType.ZERO_COMMISSION,
             eligibleConsumptionInfo = EligibleConsumptionInfo(
@@ -63,6 +64,7 @@ class PurchaseProgressedSubscriptionPreviewProvider : PreviewParameterProvider<P
             ),
         ) to greenTheme,
         ActivatedSubscriptionV2(
+            subscriptionId = "ramzaan_2",
             title = "Ramzaan Special",
             ruleType = RuleType.ZERO_COMMISSION,
             eligibleConsumptionInfo = EligibleConsumptionInfo(
@@ -100,6 +102,7 @@ class PurchaseProgressedSubscriptionPreviewProvider : PreviewParameterProvider<P
             ),
         ) to orangeTheme,
         ActivatedSubscriptionV2(
+            subscriptionId = "ramzaan_3",
             title = "Ramzaan Special",
             ruleType = RuleType.ZERO_COMMISSION,
             eligibleConsumptionInfo = EligibleConsumptionInfo(
@@ -137,6 +140,7 @@ class PurchaseProgressedSubscriptionPreviewProvider : PreviewParameterProvider<P
             ),
         ) to redTheme,
         PurchasedSubscriptionV2(
+            subscriptionId = "weekend_saver_1",
             title = "Weekend Saver",
             ruleType = RuleType.VARIABLE_COMMISSION,
             eligibleConsumptionInfo = EligibleConsumptionInfo(
@@ -162,6 +166,7 @@ class PurchaseProgressedSubscriptionPreviewProvider : PreviewParameterProvider<P
             ),
         ) to blueTheme,
         PurchasedSubscriptionV2(
+            subscriptionId = "weekend_saver_2",
             title = "Weekend Saver",
             ruleType = RuleType.VARIABLE_COMMISSION,
             eligibleConsumptionInfo = EligibleConsumptionInfo(
@@ -187,6 +192,7 @@ class PurchaseProgressedSubscriptionPreviewProvider : PreviewParameterProvider<P
             ),
         ) to blueTheme,
         PurchasedSubscriptionV2(
+            subscriptionId = "weekend_saver_3",
             title = "Weekend Saver",
             ruleType = RuleType.VARIABLE_COMMISSION,
             eligibleConsumptionInfo = EligibleConsumptionInfo(

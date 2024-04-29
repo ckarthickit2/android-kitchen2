@@ -190,7 +190,8 @@ class SubsScreenPreviewParameterProvider : PreviewParameterProvider<Subscription
                     helpInfo = SubscriptionInfo.HelpInfo(
                         title = "Help",
                         context = "recharge"
-                    )
+                    ),
+                    confirmationPopupTitle = "",
                 ),
                 bottomSheetTitle = ""
             ),
