@@ -20,9 +20,17 @@ import androidx.compose.material.ModalBottomSheetValue
 import androidx.compose.material.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
+import androidx.compose.ui.input.nestedscroll.NestedScrollSource
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -123,8 +131,13 @@ fun SubscriptionScreenV2(
             )
         },
         content = {
+            val contentPadding = 156 * 0.85f
+            val scrollConnection = remember {
+                SubsContentScrollConnection(contentPadding)
+            }
             Box(
                 modifier = Modifier
+                    .nestedScroll(scrollConnection)
                     .background(RdsColors.gray50)
                     .padding(it)
             ) {
@@ -133,7 +146,8 @@ fun SubscriptionScreenV2(
                     model = ImageRequest.Builder(LocalContext.current)
                         .data(subsInfo.bannerInfo.bannerImageUrl)
                         .size(Size.ORIGINAL)
-                        .placeholder(R.drawable.pay_o_banner)
+                        .placeholder(R.drawable.ic_subs_banner_placeholder)
+                        .error(R.drawable.ic_subs_banner_placeholder)
                         .build()
                 )
                 RdsImage(
@@ -143,11 +157,14 @@ fun SubscriptionScreenV2(
                     painter = painter,
                     contentDescription = null,
                 )
-                SubscriptionContent(bannerHeight = 156.dp, subsInfo = subsInfo)
+                SubscriptionContent(
+                    contentPadding = scrollConnection.subsContentPadding.dp,
+                    subsInfo = subsInfo
+                )
             }
         },
         footer = {
-            if(subsInfo.selectedSubscriptionID.isNullOrBlank().not()) {
+            if (subsInfo.selectedSubscriptionID.isNullOrBlank().not()) {
                 RDSFooterCTA(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -169,13 +186,13 @@ fun SubscriptionScreenV2(
 @Composable
 fun SubscriptionContent(
     modifier: Modifier = Modifier,
-    bannerHeight: Dp,
+    contentPadding: Dp,
     subsInfo: SubscriptionInfoV2,
 ) {
     LazyColumn(
         modifier = modifier
             .fillMaxHeight()
-            .padding(top = bannerHeight.times(0.85f))
+            .padding(top = contentPadding)
     ) {
         //Current + Upcoming Plan Cards
         item {
@@ -337,7 +354,7 @@ fun CommissionSavedContent(
                     withStyle(RdsTextType.DisplayMedium.typography.toSpanStyle()) {
                         append(lifetimeCommissionSavedInfo.commissionSavedLabel)
                     }
-                    append(" ")
+                    append("  ")
                     withStyle(SpanStyle(color = RdsColors.gray900)) {
                         //TODO: Add Localisations
                         append(stringResource(R.string.commission_saved))
@@ -390,6 +407,42 @@ inline fun SubscriptionSection(
         content()
     }
 }
+
+
+class SubsContentScrollConnection(
+    private val maxContentPadding: Float,
+) : NestedScrollConnection {
+    var subsContentPadding: Float by mutableFloatStateOf(maxContentPadding)
+        private set
+
+    override fun onPreScroll(
+        available: Offset,
+        source: NestedScrollSource
+    ): Offset {
+        val delta = available.y
+        if (delta > 0) {
+            return Offset.Zero
+        }
+        val previousPadding = subsContentPadding
+        subsContentPadding = (previousPadding + delta).coerceIn(0f, maxContentPadding)
+        return Offset(0f, subsContentPadding - previousPadding)
+    }
+
+    override fun onPostScroll(
+        consumed: Offset,
+        available: Offset,
+        source: NestedScrollSource
+    ): Offset {
+        val delta = available.y
+        if (delta < 0) {
+            return Offset.Zero
+        }
+        val previousPadding = subsContentPadding
+        subsContentPadding = (previousPadding + delta).coerceIn(0f, maxContentPadding)
+        return Offset(0f, subsContentPadding - previousPadding)
+    }
+}
+
 
 @Preview(heightDp = 1250)
 @Composable
