@@ -4,9 +4,11 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.runtime.Composable
+import com.rapido.rapidodesignsystem.theme.RapidoTheme
 import me.kartdroid.androidkitchen2.subscription.models.PurchasedSubscriptionInfo
 import me.kartdroid.androidkitchen2.subscription.v1.ui.SubscriptionScreen
 import me.kartdroid.androidkitchen2.subscription.v1.ui.preview.SubsScreenPreviewParameterProvider
+import me.kartdroid.androidkitchen2.subscription.v2.ui.SubscriptionScreenV2
 import me.kartdroid.androidkitchen2.utils.logDebug
 
 /**
@@ -20,7 +22,7 @@ class SubscriptionActivity : ComponentActivity() {
         logDebug("Main ::onCreate")
         //AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
         setContent {
-            Content()
+            Content2()
         }
     }
 
@@ -49,5 +51,13 @@ class SubscriptionActivity : ComponentActivity() {
                 onPurchaseConfirmationBottomSheetHide = {},
                 onPurchaseConfirmationBottomSheetVisible = {}
         )
+    }
+
+
+    @Composable
+    fun Content2() {
+        RapidoTheme {
+            SubscriptionScreenV2(subsInfo = me.kartdroid.androidkitchen2.subscription.v2.ui.preview.SubsScreenPreviewParameterProvider().values.toList()[0])
+        }
     }
 }

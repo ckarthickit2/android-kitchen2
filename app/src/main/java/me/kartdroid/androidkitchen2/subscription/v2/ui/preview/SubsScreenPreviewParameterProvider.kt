@@ -28,7 +28,7 @@ class SubsScreenPreviewParameterProvider : PreviewParameterProvider<Subscription
         SubscriptionInfoV2(
             toolbarTitle = "Recharge",
             bannerInfo = SubscriptionInfo.BannerInfo(
-                "https://rapido-app-assets.storage.googleapis.com/0ba485b21b46fbc8563bebf2a8de1293_1686145423896.png",
+                "https://rapido-app-assets.storage.googleapis.com/86207e8617ff77a1d3ee359573a4a6da_1714720328925.png",
                 "",
                 ""
             ),

@@ -1,4 +1,4 @@
-package com.rapido.rider.preorder.multi.presentation.ui.composables
+package me.kartdroid.androidkitchen2.orders
 
 //import androidx.compose.runtime.mutableIntStateOf
 //import androidx.compose.runtime.mutableIntStateOf
@@ -30,7 +30,7 @@ import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -38,6 +38,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
@@ -49,14 +50,6 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import me.kartdroid.androidkitchen2.R
-import me.kartdroid.androidkitchen2.orders.AcceptButton
-import me.kartdroid.androidkitchen2.orders.MultiOrderUiItem
-import me.kartdroid.androidkitchen2.orders.OrderDistance
-import me.kartdroid.androidkitchen2.orders.OrderPickUpDrop
-import me.kartdroid.androidkitchen2.orders.OrderType
-import me.kartdroid.androidkitchen2.orders.PreOrderTestTag
-import me.kartdroid.androidkitchen2.orders.PreOrderUnavailableReason
-import me.kartdroid.androidkitchen2.orders.ServiceInfo
 import me.kartdroid.androidkitchen2.orders.preview.MultiOrderPreviewProvider
 import me.kartdroid.androidkitchen2.orders.preview.RenderMultiOrderListUi
 import me.kartdroid.androidkitchen2.ui.theme.AndroidKitchen2Theme
@@ -68,17 +61,18 @@ import java.text.DecimalFormat
 
 @Composable
 fun OrderItem(
-        modifier: Modifier = Modifier,
-        order: MultiOrderUiItem,
-        index: Int,
-        orderListSize: Int,
-        addBottomPaddingToFillParent: Boolean = true,
-        isShowDistanceVertical: Boolean = true,
-        onAcceptOrder: (orderId: String, isOnRideBooking: Boolean) -> Unit,
-        onRejectOrder: (orderId: String) -> Unit,
-        parentHeightProvider: () -> Int = { 0 },
+    modifier: Modifier = Modifier,
+    order: MultiOrderUiItem,
+    index: Int,
+    orderListSize: Int,
+    addBottomPaddingToFillParent: Boolean = true,
+    isShowDistanceVertical: Boolean = true,
+    onAcceptOrder: (orderId: String, isOnRideBooking: Boolean) -> Unit,
+    onRejectOrder: (orderId: String) -> Unit,
+    parentHeightProvider: () -> Int = { 0 },
+    borderColor: Color,
 ) {
-    var cardHeight by remember { mutableStateOf(0) }
+    var cardHeight by remember { mutableIntStateOf(0) }
     val isShowOverlay = (order.unavailableReason==PreOrderUnavailableReason.ACCEPTED_BY_OTHER_CAPTAIN || order.unavailableReason==PreOrderUnavailableReason.ORDER_CANCELLED_BY_CUSTOMER)
     val isDistanceOrEtaAvailable = (order.pickUpDistance > 0 || order.pickupEtaInMins > 0 || order.dropDistance > 0 || order.dropEtaInMins > 0)
 
@@ -104,7 +98,7 @@ fun OrderItem(
                     .clip(RoundedCornerShape(16.dp))
                     .background(color = RapidoTheme.colors.surface)
                     .border(
-                            BorderStroke(1.dp, color = RdsColors.neutrals4),
+                            BorderStroke(2.dp, color = borderColor),
                             shape = RoundedCornerShape(16.dp)
                     )
     ) {
@@ -460,16 +454,17 @@ fun OrderItemPreview(@PreviewParameter(MultiOrderPreviewProvider::class) renderM
             ) {
                 renderMultiOrderListUi.orderList.items.forEachIndexed { index, multiOrderUiItem ->
                     OrderItem(
-                            modifier = Modifier.padding(
-                                    start = 8.dp,
-                                    top = if (index==0) 16.dp else 8.dp,
-                                    end = 16.dp,
-                            ),
-                            order = multiOrderUiItem,
-                            index = index,
-                            orderListSize = renderMultiOrderListUi.orderList.items.size,
-                            onAcceptOrder = { _, _ -> },
-                            onRejectOrder = { _ -> }
+                        modifier = Modifier.padding(
+                                start = 8.dp,
+                                top = if (index==0) 16.dp else 8.dp,
+                                end = 16.dp,
+                        ),
+                        order = multiOrderUiItem,
+                        index = index,
+                        orderListSize = renderMultiOrderListUi.orderList.items.size,
+                        onAcceptOrder = { _, _ -> },
+                        onRejectOrder = { _ -> },
+                        borderColor = RdsColors.neutrals4
                     )
                 }
             }

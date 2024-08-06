@@ -87,7 +87,7 @@ object RdsColors {
     val neutrals9 = Color(0xff333740)
     val neutrals10 = Color(0xff24272D)
     val green1 = Color(0xff219653)
-    val green2 = Color(0xFF009E4A)
+    val green2 = Color(0xff27AE60)
     val green4 = Color(0xff66C193)
     val green5 = Color(0xff3AAF74)
     val green6 = Color(0xff24A665)

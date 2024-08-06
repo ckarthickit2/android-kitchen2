@@ -3,6 +3,7 @@ package me.kartdroid.androidkitchen2.orders
 //import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.animateIntOffsetAsState
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
@@ -19,6 +20,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -34,6 +36,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -45,15 +48,16 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.layout.onSizeChanged
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.Velocity
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.rapido.rider.preorder.multi.presentation.ui.composables.OrderItem
 import kotlinx.collections.immutable.PersistentMap
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filter
@@ -83,10 +87,12 @@ fun OrderList(
     logOnCustomerTipFTuxViewed: () -> Unit,
     logCustomerTipFTuxClicked: () -> Unit
 ) {
-    var lazyColumnHeight by remember { mutableStateOf(0) }
+    val density = LocalDensity.current
+    var lazyColumnHeight by remember { mutableIntStateOf(0) }
+    var lazyColumnWidth by remember { mutableIntStateOf(0) }
     var showCallOutFloatingMessage by remember { mutableStateOf(false) }
     var callOutBannerOrder by remember { mutableStateOf(Pair(-1, MultiOrderUiItem.CallOutBanner.EMPTY)) }
-    var tipFTuxViewedEventSent by remember { mutableStateOf(false) }
+    val tipFTuxViewedEventSent by remember { mutableStateOf(false) }
 
     val nestedScrollConnection = remember {
         object : NestedScrollConnection {
@@ -106,11 +112,12 @@ fun OrderList(
         ) {
             LazyColumn(
                 modifier = Modifier
-                        .fillMaxSize()
-                        .onSizeChanged {
-                            lazyColumnHeight = it.height
-                        }
-                        .nestedScroll(nestedScrollConnection),
+                    .fillMaxSize()
+                    .onSizeChanged {
+                        lazyColumnHeight = it.height
+                        lazyColumnWidth = it.width
+                    }
+                    .nestedScroll(nestedScrollConnection),
                 state = lazyListState,
                 flingBehavior = getSnapFlingBehavior(
                     lazyListState
@@ -120,21 +127,39 @@ fun OrderList(
                         CompositionLocalProvider(
                                 LocalKitchenColors provides (orderThemeColorsMap[order.templateName] ?: KitchenDefaultOrderColorsDark)
                         ) {
+                            var hide by remember {
+                                mutableStateOf(true)
+                            }
+                            var borderColor by remember {
+                                mutableStateOf(RdsColors.blue500)
+                            }
+                            val offset by animateIntOffsetAsState(targetValue = if(hide) IntOffset(lazyColumnWidth, 0) else IntOffset(0,0),
+                                label = "offsetAnime",
+                                finishedListener = {
+                                    borderColor = RdsColors.neutrals4
+                                }
+                            )
+                            LaunchedEffect(Unit) {
+                               kotlinx.coroutines.delay(100)
+                                hide = false
+                            }
                             OrderItem(
                                     modifier = Modifier
-                                            .addTestTag(PreOrderTestTag.CARD_INDEX_PREFIX + index)
-                                            .animateItemPlacement()
-                                            .padding(
-                                                    start = 8.dp,
-                                                    top = if (index==0) 16.dp else 8.dp,
-                                                    end = 16.dp,
-                                            ),
+                                        .offset(x = density.run { offset.x.toDp() })
+                                        .addTestTag(PreOrderTestTag.CARD_INDEX_PREFIX + index)
+                                        .animateItemPlacement()
+                                        .padding(
+                                            start = 8.dp,
+                                            top = if (index == 0) 16.dp else 8.dp,
+                                            end = 16.dp,
+                                        ),
                                     order = order,
                                     index = index,
                                     orderListSize = orderList.items.size,
                                     onAcceptOrder = onAcceptOrder,
                                     onRejectOrder = onRejectOrder,
-                                    parentHeightProvider = { lazyColumnHeight }
+                                    parentHeightProvider = { lazyColumnHeight },
+                                    borderColor = borderColor,
                             )
                         }
                     }
@@ -207,15 +232,15 @@ fun FloatingMessage(
     )
     Box(
         modifier = modifier
-                .graphicsLayer { translationY = translation }
-                .padding(all = 24.dp)
-                .clip(RoundedCornerShape(100.dp))
-                .background(color = RdsColors.greenBase)
-                .padding(vertical = 12.dp, horizontal = 16.dp)
-                .clickable {
-                    updateSelectedOrder(orderIndex, true)
-                    logCustomerTipFTuxClicked()
-                },
+            .graphicsLayer { translationY = translation }
+            .padding(all = 24.dp)
+            .clip(RoundedCornerShape(100.dp))
+            .background(color = RdsColors.greenBase)
+            .padding(vertical = 12.dp, horizontal = 16.dp)
+            .clickable {
+                updateSelectedOrder(orderIndex, true)
+                logCustomerTipFTuxClicked()
+            },
         contentAlignment = Alignment.Center
     ) {
         Row(
@@ -264,8 +289,8 @@ fun OrderListPreview(@PreviewParameter(MultiOrderPreviewProvider::class) renderM
     AndroidKitchen2Theme {
         Surface(
             modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(12.dp, 12.dp),
+                .fillMaxWidth()
+                .padding(12.dp, 12.dp),
             color = MaterialTheme.colors.background
         ) {
             Column {

@@ -18,6 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import me.kartdroid.androidkitchen2.dragablecompose.DragableComposeActivity
 import me.kartdroid.androidkitchen2.drawover.FloatingWindowService
+import me.kartdroid.androidkitchen2.drawover.FloatingWindowViewModel
 import me.kartdroid.androidkitchen2.html.HtmlActivity
 import me.kartdroid.androidkitchen2.orders.MMOOrderActivity
 import me.kartdroid.androidkitchen2.subscription.activity.SubscriptionActivity
@@ -40,7 +41,9 @@ class MainActivity : ComponentActivity() {
     }
 
     @Composable
-    fun Content() {
+    fun Content(
+        viewModel: FloatingWindowViewModel = androidx.lifecycle.viewmodel.compose.viewModel()
+    ) {
         AndroidKitchen2Theme {
             Scaffold(
                 topBar = {

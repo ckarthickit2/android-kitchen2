@@ -1,16 +1,24 @@
 package me.kartdroid.androidkitchen2.orders
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.tooling.preview.Preview
+import kotlinx.coroutines.delay
 import me.kartdroid.androidkitchen2.R
 import me.kartdroid.androidkitchen2.orders.preview.MultiOrderPreviewProvider
 import me.kartdroid.androidkitchen2.presentation.UIImageResource
 import me.kartdroid.androidkitchen2.presentation.UiText
 import me.kartdroid.androidkitchen2.utils.logDebug
+
 
 /**
  * @author [Karthick Chinnathambi](https://github.com/kartdroid)
@@ -30,8 +38,21 @@ class MMOOrderActivity : ComponentActivity() {
     @Composable
     fun Content() {
         val mutilOrderList = MultiOrderPreviewProvider().values.first()
+        var orderListFeed by remember {
+           mutableStateOf(MultiOrderListWrapper(emptyList()))
+        }
+        LaunchedEffect(Unit) {
+            val accList = mutableListOf<MultiOrderUiItem>()
+            delay(100)
+            for (item in mutilOrderList.orderList.items) {
+                accList.add(item)
+                Log.i("KC_DEBUG", "orderListFeed = ${accList}")
+                orderListFeed = MultiOrderListWrapper(accList)
+                delay(1000)
+            }
+        }
         OrderList(
-                orderList = mutilOrderList.orderList,
+                orderList = orderListFeed,
                 orderThemeColorsMap = mutilOrderList.orderThemeColorsMap,
                 lazyListState = rememberLazyListState(),
                 updateSelectedOrder = { _, _ -> },
