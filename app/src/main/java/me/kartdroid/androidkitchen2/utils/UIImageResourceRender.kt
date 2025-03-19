@@ -3,6 +3,8 @@ package me.kartdroid.androidkitchen2.utils
 import androidx.compose.foundation.Image
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import coil.compose.AsyncImage
@@ -15,7 +17,12 @@ import me.kartdroid.androidkitchen2.presentation.UIImageResource
  */
 
 @Composable
-fun UIImageResourceRender(resource: UIImageResource, modifier: Modifier) {
+fun UIImageResourceRender(
+    resource: UIImageResource,
+    modifier: Modifier,
+    contentScale: ContentScale = ContentScale.Fit,
+    colorFilter: ColorFilter? = null,
+) {
     when (resource) {
         is UIImageResource.DrawableResource -> {
             Image(
@@ -25,15 +32,20 @@ fun UIImageResourceRender(resource: UIImageResource, modifier: Modifier) {
 
                 ),
                 contentDescription = null,
-                modifier = modifier
+                modifier = modifier,
+                colorFilter = colorFilter,
+                contentScale = contentScale,
             )
         }
+
         is UIImageResource.RemoteResource -> {
             AsyncImage(
                 model = ImageRequest.Builder(LocalContext.current).data(resource.uri)
                     .placeholder(resource.placeholderDrawable).build(),
                 contentDescription = null,
-                modifier = modifier
+                modifier = modifier,
+                colorFilter = colorFilter,
+                contentScale = contentScale
             )
         }
     }

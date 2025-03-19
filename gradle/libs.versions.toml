@@ -16,6 +16,7 @@ drawerlayout-version="1.1.1"
 coordinatorlayout-version="1.2.0"
 material="1.5.0"
 accompanit="0.32.0"
+runtime-android = "1.7.8"
 
 [libraries]
 core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "core-ktx" }
@@ -44,6 +45,7 @@ kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-
 androidx-drawer-layout = { group = "androidx.drawerlayout", name = "drawerlayout", version.ref = "drawerlayout-version" }
 androidx-coordinator-layout = { group = "androidx.coordinatorlayout", name = "coordinatorlayout", version.ref = "coordinatorlayout-version" }
 accompanist-placeholder = { group = "com.google.accompanist", name = "accompanist-placeholder", version.ref= "accompanit" }
+androidx-runtime-android = { group = "androidx.compose.runtime", name = "runtime-android", version.ref = "runtime-android" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
