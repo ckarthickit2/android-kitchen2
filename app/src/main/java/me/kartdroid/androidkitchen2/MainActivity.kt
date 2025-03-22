@@ -16,23 +16,37 @@ import android.os.VibrationAttributes
 import android.os.VibrationEffect
 import android.os.Vibrator
 import android.provider.Settings
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Button
+import androidx.compose.material.Card
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.RoundRect
 import androidx.compose.ui.geometry.Size
@@ -41,18 +55,25 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Outline
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.core.app.NotificationCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
+import kotlinx.collections.immutable.PersistentList
+import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import me.kartdroid.androidkitchen2.components.SwipeAbleCardStack
+import me.kartdroid.androidkitchen2.components.preview.CardData
+import me.kartdroid.androidkitchen2.components.preview.CardStackPreviewProvider
 import me.kartdroid.androidkitchen2.dragablecompose.DragableComposeActivity
 import me.kartdroid.androidkitchen2.drawover.FloatingWindowService
 import me.kartdroid.androidkitchen2.drawover.FloatingWindowViewModel
@@ -82,6 +103,7 @@ class MainActivity : ComponentActivity() {
             }
         })
     }
+
     private val nonConfigurationCustomInstance: NonConfigurationCustomInstance by lazy {
         val lastInstance = lastCustomNonConfigurationInstance
         if (lastInstance == null) {
@@ -151,7 +173,13 @@ class MainActivity : ComponentActivity() {
                 Surface(
                     modifier = Modifier.padding(it)
                 ) {
-                    Column {
+                    val scrollState = rememberScrollState()
+                    LaunchedEffect(Unit) {
+                        scrollState.animateScrollTo(scrollState.maxValue)
+                    }
+                    Column(
+                        modifier = Modifier.verticalScroll(scrollState)
+                    ) {
                         Text(text = randomCustomObject.message)
                         Button(
                             onClick = {
@@ -228,7 +256,15 @@ class MainActivity : ComponentActivity() {
                                 .width(240.dp)
                                 .height(360.dp),
                             assetBasePath = "file:///android_asset/",
-                            assetName = "asset://sample_bill.svg"
+                            assetName = "asset://hundred_bill.svg"
+                        )
+
+                        RenderSwipeAbleCardStack(
+                            modifier = Modifier
+                                .padding(horizontal = 40.dp)
+                                .fillMaxWidth()
+                                .aspectRatio(0.6f)
+                                .wrapContentSize()
                         )
                     }
                 }
@@ -348,7 +384,7 @@ class MainActivity : ComponentActivity() {
                             //.setUsage(VibrationAttributes.USAGE_RINGTONE)
                             .build()
                     )
-                }else {
+                } else {
                     vibrator.vibrate(
                         effect,
                         AudioAttributes.Builder()
@@ -462,6 +498,7 @@ class MainActivity : ComponentActivity() {
 class RandomCustomObject(
     val message: String
 )
+
 class NonConfigurationCustomInstance {
     private val mMap = HashMap<String, Any>()
     fun get(key: String): Any? {
@@ -474,6 +511,62 @@ class NonConfigurationCustomInstance {
 
     fun remove(key: String) {
         mMap.remove(key)
+    }
+}
+
+@Composable
+fun RenderSwipeAbleCardStack(modifier: Modifier = Modifier) {
+    val data = CardStackPreviewProvider().values.first()
+    val cardItems: PersistentList<CardData> = remember {
+        data.toPersistentList()
+    }
+
+    // Generate default rotations for each card
+    val defaultRotations = remember {
+        List(cardItems.size) { index ->
+            val multiplicationFactor = 4f
+            when (index) {
+                0 -> 0f
+                1 -> -.5f * multiplicationFactor
+                2 -> .7f * multiplicationFactor
+                3 -> 1.2f * multiplicationFactor
+                4 -> -1.2f * multiplicationFactor
+                else -> 0f
+            }
+        }
+    }
+
+    SwipeAbleCardStack(
+        modifier = modifier,
+        items = cardItems,
+        visibleCardCount = 5,
+        keyConfig = { item -> item.title },
+        thresholdConfig = { _, _ -> 0.2f },
+        rotationsConfig = { index, _ -> defaultRotations[index] },
+        onSwipe = { result ->
+            Log.d("CardStack", "Swiped ${result.direction} on card ${result.item}")
+        }
+    ) { item, _ ->
+        Card(
+            modifier = Modifier
+                .fillMaxWidth(0.9f)
+                .fillMaxHeight(0.6f),
+            shape = RoundedCornerShape(24.dp),
+            elevation = 8.dp
+        ) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(item.gradient),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = item.title,
+                    fontSize = 24.sp,
+                    fontWeight = FontWeight.Bold
+                )
+            }
+        }
     }
 }
 

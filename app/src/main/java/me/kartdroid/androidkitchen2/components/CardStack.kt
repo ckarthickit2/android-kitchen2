@@ -34,7 +34,6 @@ import androidx.compose.runtime.toMutableStateMap
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.TransformOrigin
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
@@ -49,7 +48,9 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import kotlinx.collections.immutable.PersistentList
 import kotlinx.collections.immutable.toPersistentList
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import me.kartdroid.androidkitchen2.components.preview.CardData
 import me.kartdroid.androidkitchen2.components.preview.CardStackPreviewProvider
 import kotlin.math.abs
 import kotlin.math.roundToInt
@@ -65,15 +66,22 @@ data class SwipeResult<T>(
     val item: T
 )
 
+/**
+ * A Stack of Cards View where the rotation angle of each card is configurable
+ * @author [Karthick Chinnathambi](https://github.com/karthick-rapido)
+ * @since 20/03/25.
+ */
 
 @Composable
-fun <T> CardStackV5(
+fun <T> SwipeAbleCardStack(
     modifier: Modifier = Modifier,
     items: PersistentList<T>,
     visibleCardCount: Int = 4,
     keyConfig: (T) -> Any,
     thresholdConfig: (Float, Float) -> Float = { _, _ -> 0.1f },
     rotationsConfig: (Int, T) -> Float = { _, _ -> 0f },
+    scaleConfig: (Int,T) -> Float = { index, _ -> 1f - (index * 0.02f)},
+    zIndexConfig: (Int, Int, T) -> Float = { size, index, T -> (size - index).toFloat() },
     onSwipe: (SwipeResult<T>) -> Unit = {},
     cardContent: @Composable (T, Int) -> Unit
 ) {
@@ -85,19 +93,17 @@ fun <T> CardStackV5(
     // Size of the CardStack container
     var containerSize by remember { mutableStateOf(IntSize.Zero) }
 
-
-    // Track drag state
-    val dragOffset = remember { Animatable(Offset.Zero, Offset.VectorConverter) }
-
-
     // Coroutine scope for animations
     val coroutineScope = rememberCoroutineScope()
+
+    // Track drag state
+    val topCardDragOffset = remember { Animatable(Offset.Zero, Offset.VectorConverter) }
 
     // Calculate rotation based on drag offset
     val dragRotation by remember {
         derivedStateOf {
             if (containerSize.width > 0) {
-                dragOffset.value.x * 15f / containerSize.width
+                topCardDragOffset.value.x * 15f / containerSize.width
             } else {
                 0f
             }
@@ -118,8 +124,8 @@ fun <T> CardStackV5(
     // Determine swipe direction
     val swipeDirection by remember {
         derivedStateOf {
-            val offsetX = dragOffset.value.x
-            val offsetY = dragOffset.value.y
+            val offsetX = topCardDragOffset.value.x
+            val offsetY = topCardDragOffset.value.y
 
             val xRatio = abs(offsetX) / (containerSize.width * threshold)
             val yRatio = abs(offsetY) / (containerSize.height * threshold)
@@ -136,7 +142,7 @@ fun <T> CardStackV5(
     // Function to handle swipe
     val executeSwipe = { direction: SwipeDirection, item: T ->
         if (direction != SwipeDirection.NONE) {
-            //val targetIndex = currentIndex
+            // val targetIndex = currentIndex
             onSwipe(SwipeResult(direction, item = item))
 
             // Update current index after swipe
@@ -144,7 +150,12 @@ fun <T> CardStackV5(
             true
         } else false
     }
-
+    var isDragging by remember {
+        mutableStateOf(false)
+    }
+    var shouldAnimateRotation by remember {
+        mutableStateOf(true)
+    }
     // Function to handle card settling
     val settle = { item: T ->
         coroutineScope.launch {
@@ -170,19 +181,23 @@ fun <T> CardStackV5(
                 )
             }
 
-            dragOffset.animateTo(
+            topCardDragOffset.animateTo(
                 targetValue = settlePoint,
                 animationSpec = spring(stiffness = Spring.StiffnessMediumLow)
             ) {
+
                 // If we've reached the target and it's not center, execute the swipe
-                if (settlePoint != Offset.Zero && value.x.roundToInt() == settlePoint.x.roundToInt()
-                    && value.y.roundToInt() == settlePoint.y.roundToInt()
+                if (settlePoint != Offset.Zero && value.x.roundToInt() == settlePoint.x.roundToInt() &&
+                    value.y.roundToInt() == settlePoint.y.roundToInt()
                 ) {
                     if (executeSwipe(swipeDirection, item)) {
                         // Reset offset after successful swipe
+                        isDragging = false
                         coroutineScope.launch {
-                            dragOffset.snapTo(Offset.Zero)
+                            topCardDragOffset.snapTo(Offset.Zero)
                         }
+                    }else {
+                        isDragging = false
                     }
                 }
             }
@@ -190,8 +205,18 @@ fun <T> CardStackV5(
     }
 
     val currentRotations: SnapshotStateMap<Any, Float> = remember {
-        items.mapIndexed { index, item -> keyConfig(item) to rotationsConfig(index, item) }
+        items.mapIndexed { index, item -> keyConfig(item) to 0f/*if(index == 0) -4f else 0f*/ }
             .toMutableStateMap()
+    }
+    val currentScales: SnapshotStateMap<Any, Float> = remember {
+        items.mapIndexed { index, item ->
+            keyConfig(item) to scaleConfig(index, item)
+        }.toMutableStateMap()
+    }
+    val currentZIndex: SnapshotStateMap<Any, Float> = remember {
+        items.mapIndexed { index, item ->
+            keyConfig(item) to zIndexConfig(items.size, index, item)
+        }.toMutableStateMap()
     }
     Box(
         modifier = modifier
@@ -200,45 +225,81 @@ fun <T> CardStackV5(
                 containerSize = it
             }
     ) {
+        LaunchedEffect(Unit) {
+            delay(500)
+            sequencedItems.forEachIndexed { index, item ->
+                currentRotations[keyConfig(item)] = rotationsConfig(index, item)
+            }
+            delay(500)
+            shouldAnimateRotation = false
+        }
         // Display up to visibleCardCount cards
         sequencedItems.forEachIndexed { index, item ->
             // Only show if it's within the visible range
-            //reverseIndex >= currentIndex && reverseIndex < currentIndex + visibleCardCount
+            // reverseIndex >= currentIndex && reverseIndex < currentIndex + visibleCardCount
 
-            if (index <= visibleCardCount) {
+            if (index < visibleCardCount) {
 
                 // Apply modifiers only to the top card
                 val isTopCard = index == 0
                 key(keyConfig(item)) {
 
-                    LaunchedEffect(Unit) {
-                        currentRotations[keyConfig(item)] = rotationsConfig(index, item)
-                    }
-
                     // Get the default rotation for this card
                     val defaultRotation by animateFloatAsState(
                         currentRotations.getValue(keyConfig(item)),
-                        animationSpec = tween(500, delayMillis = 0),
+                        animationSpec = tween(
+                            if (shouldAnimateRotation || isTopCard) 500 else 200,
+                            delayMillis = if (isTopCard) 100 else 0
+                        ),
+                        //animationSpec = tween(200 , delayMillis = 0),
                         label = "rotation"
                     )
+                    // Scale and opacity effect for cards behind the top card
+                    val scale by animateFloatAsState(
+                        currentScales.getValue(keyConfig(item)),
+                        animationSpec = tween(200 , delayMillis = 0),
+                        //animationSpec = tween(if(shouldAnimateRotation || isTopCard) 500 else 0, delayMillis = if(isTopCard)100 else 0),
+                        label = "scale")
+
+                    LaunchedEffect(Unit) {
+                        if(isTopCard) {
+                            Log.d("KC_DEBUG", "item=${keyConfig(item)} currentRotation =${ currentRotations[keyConfig(item)]}, newRotation=${rotationsConfig(index, item)}")
+                        }
+                        //delay(300)
+                        currentRotations[keyConfig(item)] = rotationsConfig(index, item)
+                        currentScales[keyConfig(item)] = scaleConfig(index, item)
+                        currentZIndex[keyConfig(item)] = zIndexConfig(sequencedItems.size, index, item)
+                    }
 
 
                     val cardModifier = if (isTopCard) {
                         Modifier
-                            .offset {
-                                IntOffset(
-                                    dragOffset.value.x.roundToInt(),
-                                    dragOffset.value.y.roundToInt()
-                                )
-                            }
                             .graphicsLayer {
                                 // Top card has default rotation plus drag rotation
-                                rotationZ = rotationsConfig(index, item) + dragRotation
+                                transformOrigin = TransformOrigin(0.5f, 1f)
+                                val actualDragRotation = if (isDragging) dragRotation else 0f
+                                rotationZ =
+                                    defaultRotation + actualDragRotation
+                            }
+                            .graphicsLayer {
+                                scaleX = scale
+                                scaleY = scale
+                            }
+                            .offset {
+                                if (isDragging) {
+                                    IntOffset(
+                                        topCardDragOffset.value.x.roundToInt(),
+                                        topCardDragOffset.value.y.roundToInt()
+                                    )
+                                } else {
+                                    IntOffset.Zero
+                                }
                             }
                             .pointerInput(keyConfig(item)) {
                                 detectDragGestures(
                                     onDragStart = { _ ->
                                         // Optional: handle drag start
+                                        isDragging = true
                                     },
                                     onDragEnd = {
                                         settle(item)
@@ -248,8 +309,8 @@ fun <T> CardStackV5(
                                     },
                                     onDrag = { change, dragAmount ->
                                         coroutineScope.launch {
-                                            dragOffset.snapTo(
-                                                dragOffset.value + dragAmount
+                                            topCardDragOffset.snapTo(
+                                                topCardDragOffset.value + dragAmount
                                             )
                                         }
                                         change.consume()
@@ -257,8 +318,8 @@ fun <T> CardStackV5(
                                 )
                             }
                     } else {
-                        // Scale and opacity effect for cards behind the top card
-                        val scale = 1f - (index * 0.02f)
+                        //currentRotations[(keyConfig(item))] ?: 0f,
+
 
                         Modifier
                             .graphicsLayer {
@@ -287,16 +348,10 @@ fun <T> CardStackV5(
     }
 }
 
-
-data class CardData(
-    val title: String,
-    val gradient: Brush
-)
-
 @Preview(widthDp = 520)
 @Composable
 fun CardStackPreview(@PreviewParameter(CardStackPreviewProvider::class) data: List<CardData>) {
-    val cardItems = remember {
+    val cardItems: PersistentList<CardData> = remember {
         data.toPersistentList()
     }
 
@@ -315,7 +370,7 @@ fun CardStackPreview(@PreviewParameter(CardStackPreviewProvider::class) data: Li
         }
     }
 
-    CardStackV5(
+    SwipeAbleCardStack(
         modifier = Modifier
             .padding(horizontal = 40.dp)
             .wrapContentSize(),
@@ -325,7 +380,7 @@ fun CardStackPreview(@PreviewParameter(CardStackPreviewProvider::class) data: Li
         thresholdConfig = { _, _ -> 0.2f },
         rotationsConfig = { index, _ -> defaultRotations[index] },
         onSwipe = { result ->
-            Log.d("CardStack", "Swiped ${result.direction} on card ${result.item}")
+            Log.d("CardStack","Swiped ${result.direction} on card ${result.item}")
         }
     ) { item, _ ->
         Card(

@@ -4,11 +4,15 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import kotlinx.collections.immutable.toPersistentList
-import me.kartdroid.androidkitchen2.components.CardData
+
+data class CardData(
+    val title: String,
+    val gradient: Brush
+)
 
 class CardStackPreviewProvider : PreviewParameterProvider<List<CardData>> {
     override val values: Sequence<List<CardData>> = sequenceOf(
-        List(10) { index ->
+       /* List(10) { index ->
             CardData(
                 title = "New Card $index",
                 gradient = getRandomGradient()
@@ -32,18 +36,18 @@ class CardStackPreviewProvider : PreviewParameterProvider<List<CardData>> {
                 gradient = getRandomGradient()
             )
         }.toPersistentList(),
-        List(4) { index ->
+       List(4) { index ->
             CardData(
                 title = "New Card $index",
                 gradient = getRandomGradient()
             )
-        }.toPersistentList(),
-        List(5) { index ->
+        }.toPersistentList(),*/
+         List(5) { index ->
             CardData(
                 title = "New Card $index",
                 gradient = getRandomGradient()
             )
-        }.toPersistentList(),
+        }.toPersistentList(),/**/
     )
 }
 
