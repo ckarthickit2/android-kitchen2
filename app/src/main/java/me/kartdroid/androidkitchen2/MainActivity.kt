@@ -45,7 +45,10 @@ import androidx.compose.material.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.RoundRect
@@ -54,6 +57,8 @@ import androidx.compose.ui.geometry.toRect
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Outline
 import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.layout.boundsInWindow
+import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -175,7 +180,7 @@ class MainActivity : ComponentActivity() {
                 ) {
                     val scrollState = rememberScrollState()
                     LaunchedEffect(Unit) {
-                        scrollState.animateScrollTo(scrollState.maxValue)
+                        //scrollState.animateScrollTo(scrollState.maxValue)
                     }
                     Column(
                         modifier = Modifier.verticalScroll(scrollState)
@@ -535,11 +540,37 @@ fun RenderSwipeAbleCardStack(modifier: Modifier = Modifier) {
             }
         }
     }
-
+    var isVisible by remember {
+        mutableStateOf(false)
+    }
     SwipeAbleCardStack(
-        modifier = modifier,
+        modifier = modifier
+            .onGloballyPositioned { layoutCoordinates ->
+                val viewPortBounds = layoutCoordinates.parentLayoutCoordinates?.boundsInWindow()
+                val childBounds = layoutCoordinates.boundsInWindow()
+
+
+                if (viewPortBounds != null) {
+                    Log.d("KC_DEBUG", "viewPort=$viewPortBounds, childBounds: $childBounds")
+                    Log.d("KC_DEBUG", "width=${layoutCoordinates.size.width}, height=${layoutCoordinates.size.height}")
+                    Log.d("KC_DEBUG", "isInWindow = ${if(childBounds.top > 0) (.65 * childBounds.top + layoutCoordinates.size.height) <= viewPortBounds.bottom else false} ")
+                    //val isCurrentlyInViewport = viewPortBounds.overlaps(childBounds)
+                    val isCurrentlyInViewport =
+                        if (childBounds.top > 0) (.65 * childBounds.top + layoutCoordinates.size.height) <= viewPortBounds.bottom else false
+                    if (isCurrentlyInViewport && !isVisible) {
+                        //Entered View Port
+                        Log.d("KC_DEBUG", "Entered View Port")
+                        isVisible = true
+                    } else if (!isCurrentlyInViewport && isVisible) {
+                        Log.d("KC_DEBUG", "Exit View Port")
+                        isVisible = false
+                        //Exit View Port
+                    }
+                }
+            },
         items = cardItems,
         visibleCardCount = 5,
+        isVisible = isVisible,
         keyConfig = { item -> item.title },
         thresholdConfig = { _, _ -> 0.2f },
         rotationsConfig = { index, _ -> defaultRotations[index] },

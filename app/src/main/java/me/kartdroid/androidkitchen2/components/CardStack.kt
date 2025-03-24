@@ -77,6 +77,7 @@ fun <T> SwipeAbleCardStack(
     modifier: Modifier = Modifier,
     items: PersistentList<T>,
     visibleCardCount: Int = 4,
+    isVisible: Boolean,
     keyConfig: (T) -> Any,
     thresholdConfig: (Float, Float) -> Float = { _, _ -> 0.1f },
     rotationsConfig: (Int, T) -> Float = { _, _ -> 0f },
@@ -225,13 +226,15 @@ fun <T> SwipeAbleCardStack(
                 containerSize = it
             }
     ) {
-        LaunchedEffect(Unit) {
-            delay(500)
-            sequencedItems.forEachIndexed { index, item ->
-                currentRotations[keyConfig(item)] = rotationsConfig(index, item)
+        LaunchedEffect(isVisible) {
+            if (isVisible) {
+                delay(500)
+                sequencedItems.forEachIndexed { index, item ->
+                    currentRotations[keyConfig(item)] = rotationsConfig(index, item)
+                }
+                delay(500)
+                shouldAnimateRotation = false
             }
-            delay(500)
-            shouldAnimateRotation = false
         }
         // Display up to visibleCardCount cards
         sequencedItems.forEachIndexed { index, item ->
@@ -261,14 +264,17 @@ fun <T> SwipeAbleCardStack(
                         //animationSpec = tween(if(shouldAnimateRotation || isTopCard) 500 else 0, delayMillis = if(isTopCard)100 else 0),
                         label = "scale")
 
-                    LaunchedEffect(Unit) {
+                    LaunchedEffect(isVisible) {
                         if(isTopCard) {
                             Log.d("KC_DEBUG", "item=${keyConfig(item)} currentRotation =${ currentRotations[keyConfig(item)]}, newRotation=${rotationsConfig(index, item)}")
                         }
                         //delay(300)
-                        currentRotations[keyConfig(item)] = rotationsConfig(index, item)
-                        currentScales[keyConfig(item)] = scaleConfig(index, item)
-                        currentZIndex[keyConfig(item)] = zIndexConfig(sequencedItems.size, index, item)
+                        if(isVisible) {
+                            currentRotations[keyConfig(item)] = rotationsConfig(index, item)
+                            currentScales[keyConfig(item)] = scaleConfig(index, item)
+                            currentZIndex[keyConfig(item)] =
+                                zIndexConfig(sequencedItems.size, index, item)
+                        }
                     }
 
 
@@ -376,6 +382,7 @@ fun CardStackPreview(@PreviewParameter(CardStackPreviewProvider::class) data: Li
             .wrapContentSize(),
         items = cardItems,
         visibleCardCount = 5,
+        isVisible = true,
         keyConfig = { item -> item.title },
         thresholdConfig = { _, _ -> 0.2f },
         rotationsConfig = { index, _ -> defaultRotations[index] },
